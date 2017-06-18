@@ -1,0 +1,30 @@
+{
+  "name": "calendar-pirce-jquery",
+  "version": "1.0.0",
+  "author": "Capricorncd",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-uglify": "^2.2.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-contrib-stylus": "^1.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/capricorncd/calendar-pirce-jquery.git"
+  },
+  "keywords": [
+    "calendar",
+    "pirce",
+    "jquery"
+  ],
+  "description": "calendar-pirce-jquery",
+  "bugs": {
+    "url": "https://github.com/capricorncd/calendar-pirce-jquery/issues"
+  },
+  "homepage": "https://github.com/capricorncd/calendar-pirce-jquery#readme",
+  "main": "build/calendar-pirce-jquery.min.js",
+  "scripts": {
+    "build": "grunt"
+  },
+  "license": "ISC"
+}

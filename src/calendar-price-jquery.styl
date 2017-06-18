@@ -1,0 +1,292 @@
+$arrowIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAPCAYAAAD+pA/bAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MkE0NjVCOTM0RUFCMTFFNzlDQTBEREYxM0JBOUIxMUQiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MkE0NjVCOTI0RUFCMTFFNzlDQTBEREYxM0JBOUIxMUQiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MDI4NjAxNTI0RUE5MTFFNzhCQUJFNUZDMUI1NzhBRTIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MDI4NjAxNTM0RUE5MTFFNzhCQUJFNUZDMUI1NzhBRTIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz74CkBOAAAAvUlEQVR42mL4//8/AwE8GYg9gZiRCLUYmImBMHgExNuA+DwQRwExCwMpgAhXSAHxn/8IcBeIs4CYkxgfEOvVHf8xwUsgrgJiAWpYEPMfN/gIxF1Qn2K1gFrgBxDPAmJVWlkAA3+BeDUQG4MsACW9/wy0A5W08sEaIDahdhD9BOLZQKxG7VT0CYi78aUiSvJBNRALUpoP0HPyPSDOpmZOLoEafBGIo4GYhZTCjpiCSwGIvYF4O6joIjWdAgQYAANK4X9Vjp9FAAAAAElFTkSuQmCC';
+
+$closeIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ppVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpFODc3OUU2QjNGNkIxMUU2QkQxMUIxRENFMjQwRTA3NiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo1MjYzNUUzQjUzNjExMUU3OTY5OUIxQjZEODgwMzYxMyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1MjYzNUUzQTUzNjExMUU3OTY5OUIxQjZEODgwMzYxMyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo2RUJDQzE1QThERjMxMUU2OTE5NEVGNDg3OUM4QTE0RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo2RUJDQzE1QjhERjMxMUU2OTE5NEVGNDg3OUM4QTE0RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pl7a5jgAAACESURBVHjaYvz//z8DLQETA43BqAWD24KbQNxMhBnNULXYASiZ4sDN/yGgHo+aeqiaZlxq8FmAbEA9iXJEWwDC1VgMghleRUg/MRaAcCXUwAoo/g8VY6CWBSBc/B8BionVR/NkOiiCiKaRTNNkSvOMdhOfRjSH3MQlzzhao41aQDEACDAAkcb7Ue21oJQAAAAASUVORK5CYII=';
+
+// 蓝色主题（默认主题）
+$blueMain = rgb(9, 140, 194);
+
+$lineColor = #DDD;
+$orange = #F60;
+$somber = #999;
+$gray = #CCC;
+$black = #383435;
+$white = #FFF;
+
+$green = #72cc46;
+$yellow = #ffba00;
+$red = #F00;
+$blue = #069dd5;
+
+.clearfix:after
+  content: '';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
+  width: 0;
+  height: 0;
+  clear: both;
+
+//日历
+.capricorncd-calendar-container
+  margin: 0 auto;
+  width: 100%;
+  color: #333;
+  font-size: 1em;
+  background-color: #fff;
+  .calendar-head-wrapper
+    position: relative;
+    height: 48px;
+    background-color: rgb(9, 140, 194);
+    .calendar-month-title
+      text-align: center;
+      font-size: 1.5em;
+      line-height: 48px;
+      color: #fff;
+    a
+      display: block;
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      width: 48px;
+      height: 48px;
+      background-image: url($arrowIcon);
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 20% auto;
+      text-align: center;
+      cursor: pointer;
+      &:before
+        display: inline-block;
+        margin-top: 13px;
+        width: 20px;
+        height: 20px;
+        overflow: hidden;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        content: '';
+      &:hover
+        opacity: .8;
+      &.prev-month
+        left: 0;
+        transform: rotate(180deg);
+      &.next-month
+        right: 0;
+  .calendar-table-wrapper
+    table
+      width: 100%;
+      //border-collapse: collapse;
+      border: none;
+      th
+        width: 14.2%;
+        line-height: 28px;
+        color: #fff;
+        background-color: rgba(9, 140, 194, .6);
+      td
+        position: relative;
+        vertical-align: top;
+        height: 68px;
+        background-color: #fff;
+        border-bottom: 1px solid #eee;
+        border-right: 1px solid #eee;
+        &:last-child
+          border-right: 0;
+        &.disabled
+          color: #ccc;
+        b
+          display: block;
+          text-align: right;
+          line-height: 1.5;
+        div
+        	font-size: 12px;
+        	color: rgb(9, 140, 194); 
+        	p
+        	  margin: 4px 0;
+        	  padding: 0;
+        &.valid-hook:hover
+          background-color: rgb(9, 140, 194);
+          b, p
+            color: #fff;
+
+//日历/单日设置框页脚
+.capricorncd-calendar-container .calendar-foot-wrapper,
+.capricorncd-date-detailed-settings .cddsw-foot-wrapper
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 60px;
+  button
+    display: inline-block;
+    margin-right: 10px;
+    width: 60px;
+    height: 30px;
+    text-align: center;
+    cursor: pointer;
+    border: 0;
+    background: none;
+    outline: none;
+    color: #fff;
+    &:last-child
+      margin-right: 20px;
+    &.btn-reset
+      background-color: rgba(85, 181, 38, .8);
+      border: 1px solid rgba(85, 181, 38, .8);
+      &:hover
+        background-color: rgb(85, 181, 38);
+        border-color: rgba(85, 181, 38, 1);
+    &.btn-submit
+      background-color: rgb(9, 140, 194);
+      border: 1px solid rgb(9, 140, 194);
+      &:hover
+        background-color: rgb(0, 100, 154);
+        border-color: rgb(0, 100, 154);
+    &.btn-cancel
+      background-color: #fff;
+      color: #999;
+      border: 1px solid #ccc;
+      &:hover
+        color: #666;
+        border-color: #bbb;
+
+.capricorncd-date-detailed-settings .cddsw-foot-wrapper
+  .btn-submit
+    width: 100px;
+
+
+/*
+ * 单独日期价格设置
+ */
+.capricorncd-date-detailed-settings
+  display: flex;
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, .3);
+  .cddsw-container
+    width: 640px;
+    position: relative;
+    background-color: #FFF;
+    font-size: 14px;
+    *
+      margin: 0;
+      padding: 0;
+    .cddsw-head-wrapper
+      height: 46px;
+      line-height: 46px;
+      position: relative;
+      background: $blueMain;
+      .cddsw-title
+        color: #fff;
+        margin-left: 20px;
+        font-weight: 500;
+      .cddsw-close
+        display: block;
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        top: 0;
+        width: 46px;
+        height: 46px;
+        text-align: center;
+        cursor: pointer;
+        i
+          display: inline-block;
+          width: 24px;
+          height: 24px;
+          margin-top: 11px;
+          background: url($closeIcon) no-repeat 0 0;
+          opacity: .6;
+        &:hover
+          i
+            opacity: 1;
+    .cddsw-form-wrapper
+      padding-top: 20px;
+      li
+        display: flex;
+        position: relative;
+        float: left;
+        height: 31px;
+        line-height: 31px;
+        width: 49.9%;
+        list-style: none;
+        label
+          flex: 0 0 80px;
+          margin: 0 10px 0 20px;
+          text-align-last: justify;
+        input
+          flex: 1;
+          margin-right: 20px;
+          padding: 0 4px;
+          height: 30px;
+          line-height: 30px;
+          border: 1px solid $gray;
+          background: $white;
+    .cddsw-batch-settings
+      //margin-top: 10px;
+      border-top: 1px solid $lineColor;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 0;
+      .bs-title
+        margin-left: 15px;
+        padding: 0 5px;
+        height: 46px;
+        line-height: 46px;
+        font-size: 14px;
+      .bs-content
+        display: flex;
+        .bs-lable
+          flex: 0 0 80px;
+          text-align-last: justify;
+          margin-left: 20px;
+          margin-right: 10px;
+          height: 32px;
+          line-height: 32px;
+        .bs-options-wrapper
+          flex: 1;
+          flex-wrap: wrap;
+          height: 32px;
+          line-height: 32px;
+          .drw-enable
+            margin-left: 10px;
+          .itext
+            padding: 0 4px;
+            width: 179px;
+            height: 30px;
+            line-height: 30px;
+            border: 1px solid #ccc;
+            background: #fff;
+      .bs-week-chekbox
+        display: flex;
+        margin-top: 15px;
+        .bs-options-wrapper
+          display: flex;
+          label
+            flex: 1;
+
+@media only screen and (max-width: 640px)
+  .capricorncd-date-detailed-settings
+    display: block;
+    position: absolute;
+    .cddsw-container
+      width: 100%;
+      .cddsw-form-wrapper
+        li
+          width: 100%;
+      .cddsw-batch-settings
+        .bs-content
+          display: block;
+          .bs-options-wrapper
+            margin-left: 20px;
+            height: auto;
+            .itext
+              width: 80px;
+          .bs-options-wrapper
+            label
+              flex: 0 0 25%;

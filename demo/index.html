@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Capricorncd Calendar-Price-jQuery</title>
+    <link rel="stylesheet" href="../build/calendar-price-jquery.css">
+    <style>
+    	body {
+    		margin: 0; padding: 0; font-family: "Microsoft YaHei UI";
+    	}
+    </style>
+</head>
+<body>
+
+<div class="container"></div>
+
+<script src="jquery-1.12.4.min.js"></script>
+<script src="../src/calendar-price-jquery.js"></script>
+
+<script>
+$(function () {
+
+    var data = [
+        {
+            date: "2017-06-21",
+            stock: "9000",
+            buyNumMax: "50",
+            buyNumMin: "1",
+            price: "0.12",
+            priceMarket: "100.00",
+            priceSettlement: "90.00",
+            priceRetail: "99.00"
+        },{
+            date: "2017-07-12",
+            stock: "9000",
+            buyNumMax: "50",
+            buyNumMin: "1",
+            price: "12.00",
+            priceMarket: "100.00",
+            priceSettlement: "90.00",
+            priceRetail: "99.00"
+        }
+    ];
+
+    for (var i = 0; i < 100; i++) {
+        data.push({
+            date: '2017-'+ fd(i%5 + 6) +'-' + fd(randNum(30)),
+            stock: i*21,
+            buyNumMax: "50",
+            buyNumMin: "1",
+            price: randNum(i) + '.00',
+            priceMarket: "100.00",
+            priceSettlement: "90.00",
+            priceRetail: "99.00"
+        });
+    }
+
+    $.CalendarPrice({
+        el: '.container',
+//        month: '2017.12.21',
+        startDate: '2017-08-02',
+        endDate: '2017-09',
+        data: data,
+        // 配置需要设置的字段名称
+        config: [
+        	{
+        		key: 'buyNumMax',
+        		name: '最多购买数'
+        	},
+        	{
+        		key: 'buyNumMin',
+        		name: '最少购买数'
+        	},
+        	{
+        		key: 'price',
+        		name: '分销售价'
+        	},
+        	{
+        		key: 'priceMarket',
+        		name: '景区挂牌价'
+        	},
+        	{
+        		key: 'priceSettlement',
+        		name: '分销结算价'
+        	},
+        	{
+        		key: 'priceRetail',
+        		name: '建议零售价'
+        	},
+            {
+                key: 'cashback',
+                name: '返现'
+            },
+        	{
+        		key: 'stock',
+        		name: '当天库存'
+        	}
+        ],
+        // 配置在日历中要显示的字段
+        show: [
+        	{
+        		key: 'price',
+        		abbreviate: '分:￥',
+        		value: null
+        	},
+        	{
+                key: 'priceSettlement',
+        		abbreviate: '采:￥',
+        		value: null
+        	},
+        	{
+                key: 'stock',
+        		abbreviate: '库:',
+        		value: null
+        	}
+        ],
+        callback: function (res) {
+            console.log('callback ....');
+            console.log(res);
+        },
+        cancel: function () {
+        	console.log('取消设置 ....');
+        	// 取消设置
+        	// 这里可以触发关闭设置窗口
+        	// ...
+        },
+        error: function (err) {
+            console.error(err.msg);
+        },
+        tyle: {
+            headerBgColor: '#222'
+        }
+    });
+
+});
+
+function randNum(max) {
+    return Math.round(Math.random() * max);
+}
+
+function fd(n) {
+    n = n.toString();
+    return n[1] ? n : '0' + n;
+}
+</script>
+
+</body>
+</html>
