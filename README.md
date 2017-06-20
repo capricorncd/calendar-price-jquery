@@ -2,7 +2,7 @@ calendar-price-jquery
 ====
 Commodity calendar, price, inventory and other settings of jQuery plug-in
 
-基于Jquery的日历价格、库存等设置插件。
+基于Jquery的日历价格、库存等设置插件。需要设置的参数(字段)需自定义，详见(demo)使用方法...
 
 Create by capricorncd / 2017-06-11
 
@@ -25,14 +25,15 @@ Create by capricorncd / 2017-06-11
 <!-- 引入jQuery.js文件 -->
 <script src="jquery-1.12.4.min.js"></script>
 <!-- 引入日历价格设置插件js文件 -->
-<script src="../src/calendar-price-jquery.js"></script>
+<script src="../build/calendar-price-jquery.min.js"></script>
 <script>
 $(function () {
 	
-	// JSON数据，一般情况送后端获取
-	// 以下是模拟数据
+	// 以下mockData是模拟JSON数据，一般情况是从后端(服务器端)获取
 	// 对象中'date'字段必须，且格式一定要为0000-00-00
-    var data = [
+	// 除'date'以为的字段需自定义，然后必须在config:[]中配置
+	// 需要在日历中显示参数，需在show:[]中配置
+    var mockData = [
         {
             date: "2017-06-21",
             stock: "9000",
@@ -56,11 +57,14 @@ $(function () {
 
 	// 插件使用
     $.CalendarPrice({
+    	// 显示日历的容器
         el: '.container',
-		//month: '2017.12.21',
+        // 设置开始日期
         startDate: '2017-08-02',
+        // 设置日历显示结束日期
         endDate: '2017-09',
-        data: data,
+        // 初始数据
+        data: mockData,
         // 配置需要设置的字段名称，请与你传入的数据对象对应
         config: [
         	{
@@ -100,30 +104,30 @@ $(function () {
         show: [
         	{
         		key: 'price',
-        		abbreviate: '分:￥',
-        		value: null
+        		name: '分:￥'
         	},
         	{
                 key: 'priceSettlement',
-        		abbreviate: '采:￥',
-        		value: null
+        		name: '采:￥'
         	},
         	{
                 key: 'stock',
-        		abbreviate: '库:',
-        		value: null
+        		name: '库:'
         	}
         ],
-        callback: function (res) {
+        // 点击'确定'按钮，返回设置完成的所有数据
+        callback: function (data) {
             console.log('callback ....');
-            console.log(res);
+            console.log(data);
         },
+        // 点击'取消'按钮的回调函数
         cancel: function () {
         	console.log('取消设置 ....');
         	// 取消设置
-        	// 这里可以触发关闭设置窗口
+        	// 这里可以触发关闭设置窗口等操作
         	// ...
         },
+        // 错误等提示信息回调函数
         error: function (err) {
             console.error(err.msg);
         }
@@ -146,4 +150,20 @@ $(function () {
 
 ## Options 参数
 
-* 改天完善...
+* el: `.container` (必须)，显示日历的容器，jquery选择器均可(#id, \[属性], \[class]等)。  
+
+* startDate: `2017-06-20` (可选)，开始日期。可设置数据的开始日期，该日期以前的月份将不能设置或操作，支持某月`2017-06`或某天。开始日期开始日期未配置或小于当前系统时间，则开始日期取今日。  
+
+* endDate: `2017-09-20` (可选)，结束日期。日历中可设置数据的结束日期，该日期以后的月份将不能显示或操作，同`startDate`，支持某月(默认去该月最后一天)或某天。若未配置此项，系统默认为1年后的今日，即日期范围为1年。 
+
+* data: `mockData` (可选)，初始时日历上显示的数据，详见使用方法。  
+
+* config: `array` (必须)，与data中的数据参数(属性)对应，该配置里的配置项，即可设置的参数字段，`key` 为需要设置的字段，`name`为输入框前面显示的名称。  
+
+* show: `array` (可选)， 日历中需要显示的参数(属性)，与data中的数据参数(属性)对应。`key` 为需要设置的字段名，`name`为显示在日历中的名称(简称)。
+
+* callback: `function` (必须)， 点击`确定`按钮，返回设置完成的所有数据。
+
+* cancel: `function` (可选)， 点击`取消`按钮的回调函数。
+
+* error: `function` (可选)， 配置或操作中的错误、提示信息等回调函数。

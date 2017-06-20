@@ -16,12 +16,13 @@
 <div class="container"></div>
 
 <script src="jquery-1.12.4.min.js"></script>
-<script src="../build/calendar-price-jquery.min.js"></script>
+<!--<script src="../build/calendar-price-jquery.min.js"></script>-->
+<script src="../src/calendar-price-jquery.js"></script>
 
 <script>
 $(function () {
 
-    var data = [
+    var mockData = [
         {
             date: "2017-06-21",
             stock: "9000",
@@ -44,7 +45,7 @@ $(function () {
     ];
 
     for (var i = 0; i < 100; i++) {
-        data.push({
+        mockData.push({
             date: '2017-'+ fd(i%5 + 6) +'-' + fd(randNum(30)),
             stock: i*21,
             buyNumMax: "50",
@@ -58,10 +59,9 @@ $(function () {
 
     $.CalendarPrice({
         el: '.container',
-//        month: '2017.12.21',
         startDate: '2017-08-02',
         endDate: '2017-09',
-        data: data,
+        data: mockData,
         // 配置需要设置的字段名称
         config: [
         	{
@@ -101,23 +101,20 @@ $(function () {
         show: [
         	{
         		key: 'price',
-        		abbreviate: '分:￥',
-        		value: null
+                name: '分:￥'
         	},
         	{
                 key: 'priceSettlement',
-        		abbreviate: '采:￥',
-        		value: null
+                name: '采:￥'
         	},
         	{
                 key: 'stock',
-        		abbreviate: '库:',
-        		value: null
+        		name: '库:'
         	}
         ],
-        callback: function (res) {
+        callback: function (data) {
             console.log('callback ....');
-            console.log(res);
+            console.log(data);
         },
         cancel: function () {
         	console.log('取消设置 ....');
@@ -128,9 +125,6 @@ $(function () {
         error: function (err) {
             alert(err.msg);
             console.error(err.msg);
-        },
-        tyle: {
-            headerBgColor: '#222'
         }
     });
 

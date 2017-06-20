@@ -506,7 +506,7 @@
         if (arr && arr instanceof Array) {
             for (var i = 0; i < arr.length; i++) {
                 var val = arr[i];
-                html += '<p>'+ val.abbreviate +'{'+ val.key +'}</p>'
+                html += '<p>'+ val.name +'{'+ val.key +'}</p>'
             }
         }
         return html;
@@ -810,21 +810,28 @@
 
     /**
      * 获取初始this.data配置
+     * 获取初始数据中大于开始日期的数据
+     * 去重复、排序
      * @returns {Array}
      * @private
      */
     fn._getOptionsData = function () {
+        // 获取开始日期
         var startDay = formatDate(this.startDate, 'yyyy-MM-dd');
-        var emptyArr = [];
-        var arr = this.opts.data;
-        if (arr && arr instanceof Array) {
-            for (var i = 0; i < arr.length; i++) {
-                if (arr[i].date >= startDay) {
-                    emptyArr.push(arr[i]);
+        // 新空数组，用于存放筛选出来的数据
+        var arr = [];
+        // 初始配置的日期价格相关数据数组
+        var dataArr = this.opts.data;
+
+        if (dataArr && dataArr instanceof Array) {
+            for (var i = 0; i < dataArr.length; i++) {
+                if (dataArr[i].date >= startDay) {
+                    arr.push(dataArr[i]);
                 }
             }
         }
-        return this.sort(this.rmRepeat(emptyArr, 'date'));
+        // 去重复、排序操作
+        return this.sort(this.rmRepeat(arr, 'date'));
     };
 
     /**
