@@ -16,7 +16,7 @@
 <div class="container"></div>
 
 <script src="jquery-1.12.4.min.js"></script>
-<script src="../src/calendar-price-jquery.js"></script>
+<script src="../build/calendar-price-jquery.min.js"></script>
 
 <script>
 $(function () {
@@ -126,6 +126,7 @@ $(function () {
         	// ...
         },
         error: function (err) {
+            alert(err.msg);
             console.error(err.msg);
         },
         tyle: {

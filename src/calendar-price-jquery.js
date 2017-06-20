@@ -1,6 +1,7 @@
 /**
  * Created by Capricorncd on 2017/6/11.
  */
+'use strict';
 
 (function ($) {
 
@@ -8,14 +9,14 @@
     var TODAY = new Date();
     
     var today = formatDate(TODAY, 'yyyy-MM-dd');
-    
-    var tomorrow = formatDate(new Date(TODAY.getTime() + (24*60*60*1000)), 'yyyy-MM-dd');
 
     // 一天毫秒数
     var ONE_DAY_MSEC = 86400000;
 
+    var tomorrow = formatDate(new Date(Date.parse(TODAY) + ONE_DAY_MSEC), 'yyyy-MM-dd');
+
     /**
-     * 日历价格配置
+     * 日历价格设置jQ插件
      * @param options
      * @constructor
      */
@@ -23,7 +24,6 @@
 
         // 日历显示容器
         if (!opts.el) {
-            console.error('显示日历的容器el未配置!');
             opts.error && opts.error({
                 code: 1,
                 msg: '请配置日历显示的容器!'
@@ -228,13 +228,6 @@
         } else {
         	newDate += '/' + '01';
         }
-
-        // date为秒或毫秒
-        // if (!newDate) {
-        //     if (formatSec(date)) {
-        //         newDate = formatSec(date);
-        //     }
-        // };
         
         if (/\d{4}\/\d{1,2}\/\d{1,2}/.test(newDate)) {
             // newDate 为字符串
@@ -430,7 +423,7 @@
             return 31;
         } else {
             // month的下个月第一天，减去一天则为该月的最后一天
-            return (new Date(Date.parse(new Date(y, m, 1)) - 86400000)).getDate();
+            return (new Date(Date.parse(new Date(y, m, 1)) - ONE_DAY_MSEC)).getDate();
         }
     };
 
@@ -768,6 +761,9 @@
             }
         };
 
+        // 处理新生成的数据
+        this.data = this.sort(this.rmRepeat(this.data, 'date'));
+
         // 渲染数据到表格
         this.renderDataToTalbe();
 
@@ -799,10 +795,9 @@
         });
 
         $.each(this.data, function (key, val) {
-            if (dateString === val.date) {
+            if (data.date === val.date) {
                 is_existence = true;
-                val = data;
-                console.warn(val);
+                me.data[key] = data;
                 return false;
             }
         });
@@ -819,7 +814,17 @@
      * @private
      */
     fn._getOptionsData = function () {
-        return this.opts.data instanceof Array ? this.opts.data : [];
+        var startDay = formatDate(this.startDate, 'yyyy-MM-dd');
+        var emptyArr = [];
+        var arr = this.opts.data;
+        if (arr && arr instanceof Array) {
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i].date >= startDay) {
+                    emptyArr.push(arr[i]);
+                }
+            }
+        }
+        return this.sort(this.rmRepeat(emptyArr, 'date'));
     };
 
     /**
@@ -871,19 +876,73 @@
     };
 
     /**
-     * 格式化为毫秒
-     * @param s
+     * asc 按升序排列 desc 按降序排列
+     * @param arr 需要排序的数组
+     * @param field
+     * @param sequence
+     * @return {*}
      */
-    function formatSec(sec) {
-        sec = toNumber(sec);
-        var len = (sec + '').length;
-        if (len === 10) {
-            return sec * 1000;
-        } else if(len === 13) {
-            return sec;
+    fn.sort = function (arr) {
+
+        if (!(arr instanceof Array)) {
+            this.opts.error && this.opts.error({
+                code: 1,
+                msg: 'this.sort 传入的arr为非数组'
+            });
+            return arr;
         }
-        return 0;
+
+        if (arr.length < 1) {
+            return arr;
+        }
+
+        var minIndex = 0;
+        var fontObj = null;
+
+        for (var i = 0; i < arr.length; i++) {
+            minIndex = i;
+            for (var j = i + 1; j < arr.length; j++) {
+                if (arr[j].date < arr[minIndex].date) {
+                    minIndex = j;
+                    fontObj = arr[i];
+                    arr.splice(i, 1, arr[j]);
+                    arr.splice(j, 1, fontObj);
+                }
+            }
+        }
+
+        return arr;
+
     };
+
+    /**
+     * 数组去掉重复元素
+     * @param {Array} arr
+     * @param {String} key
+     */
+    fn.rmRepeat = function(arr, key) {
+        var hash = {};
+        var newArr = [];
+
+        for(var i = 0; i < arr.length; i++) {
+            var val = arr[i];
+            // 数组元素为对象
+            if(key) {
+                try {
+                    val = arr[i][key];
+                } catch(e) {}
+            }
+
+            if(hash[val]) {
+                continue;
+            }
+            newArr.push(arr[i]);
+            hash[val] = true;
+        }
+
+        return newArr;
+    };
+
 
 
     $.extend({
