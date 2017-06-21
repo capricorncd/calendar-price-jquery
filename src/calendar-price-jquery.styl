@@ -5,17 +5,7 @@ $closeIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34
 // 蓝色主题（默认主题）
 $blueMain = rgb(9, 140, 194);
 
-$lineColor = #DDD;
-$orange = #F60;
-$somber = #999;
-$gray = #CCC;
-$black = #383435;
-$white = #FFF;
-
-$green = #72cc46;
-$yellow = #ffba00;
-$red = #F00;
-$blue = #069dd5;
+$lineColor = #ddd;
 
 .clearfix:after
   content: '';
@@ -41,7 +31,7 @@ $blue = #069dd5;
     background-color: rgb(9, 140, 194);
     .calendar-month-title
       text-align: center;
-      font-size: 1.5em;
+      font-size: 1em;
       line-height: 48px;
       color: #fff;
     a
@@ -81,6 +71,7 @@ $blue = #069dd5;
       th
         width: 14.2%;
         line-height: 28px;
+        font-weight: 100;
         color: #fff;
         background-color: rgba(9, 140, 194, .6);
       td
@@ -225,8 +216,8 @@ $blue = #069dd5;
           padding: 0 4px;
           height: 30px;
           line-height: 30px;
-          border: 1px solid $gray;
-          background: $white;
+          border: 1px solid $lineColor;
+          background: #fff;
     .cddsw-batch-settings
       //margin-top: 10px;
       border-top: 1px solid $lineColor;
@@ -260,7 +251,7 @@ $blue = #069dd5;
             width: 179px;
             height: 30px;
             line-height: 30px;
-            border: 1px solid #ccc;
+            border: 1px solid $lineColor;
             background: #fff;
       .bs-week-chekbox
         display: flex;

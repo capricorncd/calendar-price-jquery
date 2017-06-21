@@ -59,7 +59,7 @@ $(function () {
 
     $.CalendarPrice({
         el: '.container',
-        startDate: '2017-08-02',
+//        startDate: '2017-08-02',
         endDate: '2017-09',
         data: mockData,
         // 配置需要设置的字段名称
@@ -103,14 +103,14 @@ $(function () {
         		key: 'price',
                 name: '分:￥'
         	},
-        	{
-                key: 'priceSettlement',
-                name: '采:￥'
-        	},
-        	{
-                key: 'stock',
-        		name: '库:'
-        	}
+//        	{
+//                key: 'priceSettlement',
+//                name: '采:￥'
+//        	},
+//        	{
+//                key: 'stock',
+//        		name: '库:'
+//        	}
         ],
         callback: function (data) {
             console.log('callback ....');
@@ -123,9 +123,18 @@ $(function () {
         	// ...
         },
         error: function (err) {
-            alert(err.msg);
             console.error(err.msg);
+            alert(err.msg);
         }
+        // 点击有效的某一触发的回调函数
+        // 注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置
+        // 返回每天的数据
+//        everyday: function (dayData) {
+//            console.log('点击某日，返回当天的数据');
+//            console.log(dayData);
+//        },
+        // 隐藏底部按钮（重置、确定、取消），前台使用该插件时，则需要隐藏底部按钮
+//        hideFooterButton: true
     });
 
 });
