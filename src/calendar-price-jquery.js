@@ -67,6 +67,7 @@
         callback: null,
         // 异常/错误回调
         error: null,
+        hideFooterButton: false,
         style: {
             bgColor: '#fff'
         }
@@ -122,6 +123,7 @@
 		// 重置
 		$(this.opts.el).on('click', '.btn-reset', function () {
             me.data = me._getOptionsData();
+            me.createCalendar();
             console.log('reset completed!');
         });
 		
@@ -290,11 +292,15 @@
         html += '		    <tbody>'+ this._createTbody() +'</tbody>';
         html += '	    </table>';
         html += '    </div>';
-        html += '    <div class="calendar-foot-wrapper">';
-        html += '        <button class="btn btn-reset">重置</button>';
-        html += '        <button class="btn btn-submit">确定</button>';
-        html += '        <button class="btn btn-cancel">取消</button>';
-        html += '    </div>';
+
+        // 是否显示按钮组
+        if (!this.opts.hideFooterButton) {
+            html += '    <div class="calendar-foot-wrapper">';
+            html += '        <button class="btn btn-reset">重置</button>';
+            html += '        <button class="btn btn-submit">确定</button>';
+            html += '        <button class="btn btn-cancel">取消</button>';
+            html += '    </div>';
+        }
         html += '</div>';
 
         $(this.opts.el).html(html);
@@ -524,12 +530,6 @@
         // 显示设置窗口
         $(this.opts.el).on('click', '.valid-hook', function () {
 
-            var $setContainer = $('.capricorncd-date-detailed-settings');
-            // 初始化input[value]
-            $setContainer.find('.cddsw-form-wrapper [type="text"]').val('');
-            $setContainer.find('[name="enableDateRange"]').prop('checked', false);
-            $setContainer.find('[name="setWeek"]').prop('checked', false);
-
             // 当天日期
             var thisDate = $(this).data('id');
             // 当前日的数据
@@ -540,6 +540,18 @@
             } catch (e) {
                 data = {};
             }
+
+            // 拦截弹出设置窗口，返回当天数据
+            if (me.opts.everyday) {
+                me.opts.everyday(data);
+                return;
+            }
+
+            var $setContainer = $('.capricorncd-date-detailed-settings');
+            // 初始化input[value]
+            $setContainer.find('.cddsw-form-wrapper [type="text"]').val('');
+            $setContainer.find('[name="enableDateRange"]').prop('checked', false);
+            $setContainer.find('[name="setWeek"]').prop('checked', false);
 
             // 用户传入字段
             $.each(data, function (key, val) {
@@ -575,8 +587,6 @@
             });
 
             setData.date = thisDate;
-
-            console.log(setData);
 
             // 批量设置$对象
             var $batch = $('.cddsw-batch-settings');
@@ -749,8 +759,6 @@
 
         var arr = dateArr || [];
         var len = arr.length;
-
-        console.log(arr);
 
         if (len === 0 ) {
             this._updateThisData(setData);
