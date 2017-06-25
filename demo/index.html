@@ -16,8 +16,8 @@
 <div class="container"></div>
 
 <script src="jquery-1.12.4.min.js"></script>
-<!--<script src="../build/calendar-price-jquery.min.js"></script>-->
-<script src="../src/calendar-price-jquery.js"></script>
+<script src="../build/calendar-price-jquery.min.js"></script>
+<!--<script src="../src/calendar-price-jquery.js"></script>-->
 
 <script>
 $(function () {
@@ -125,6 +125,49 @@ $(function () {
         error: function (err) {
             console.error(err.msg);
             alert(err.msg);
+        },
+        // 自定义颜色
+        style: {
+            // 头部背景色
+            headerBgColor: '#098cc2',
+            // 头部文字颜色
+            headerTextColor: '#fff',
+            // 周一至周日背景色，及文字颜色
+            weekBgColor: '#098cc2',
+            weekTextColor: '#fff',
+            // 周末背景色，及文字颜色
+            weekendBgColor: '#098cc2',
+            weekendTextColor: '#fff',
+            // 有效日期颜色
+            validDateTextColor: '#333',
+            validDateBgColor: '#fff',
+            validDateBorderColor: '#eee',
+            // Hover
+            validDateHoverBgColor: '#098cc2',
+            validDateHoverTextColor: '#fff',
+            // 无效日期颜色
+            invalidDateTextColor: '#ccc',
+            invalidDateBgColor: '#fff',
+            invalidDateBorderColor: '#eee',
+            // 底部背景颜色
+            footerBgColor: '#fff',
+            // 重置按钮颜色
+            resetBtnBgColor: '#77c351',
+            resetBtnTextColor: '#fff',
+            resetBtnHoverBgColor: '#55b526',
+            resetBtnHoverTextColor: '#fff',
+            // 确定按钮
+            confirmBtnBgColor: '#098cc2',
+            confirmBtnTextColor: '#fff',
+            confirmBtnHoverBgColor: '#00649a',
+            confirmBtnHoverTextColor: '#fff',
+            // 取消按钮
+            cancelBtnBgColor: '#fff',
+            cancelBtnBorderColor: '#bbb',
+            cancelBtnTextColor: '#999',
+            cancelBtnHoverBgColor: '#fff',
+            cancelBtnHoverBorderColor: '#bbb',
+            cancelBtnHoverTextColor: '#666'
         }
         // 点击有效的某一触发的回调函数
         // 注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置

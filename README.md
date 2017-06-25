@@ -4,6 +4,14 @@ Commodity calendar, price, inventory and other settings of jQuery plug-in
 
 基于Jquery的日历价格、库存等设置插件，也可以作为前台显示日期、价格用。需要设置的参数(字段)需自定义，详见(demo)使用方法...
 
+#### 主要功能
+
+* 自定义日历显示参数
+
+* 自定义需要设置的参数
+
+* 自定义插件的样式风格(颜色)
+
 ## 使用方法
 
 ```html
@@ -25,35 +33,35 @@ Commodity calendar, price, inventory and other settings of jQuery plug-in
 <!-- 引入日历价格设置插件js文件 -->
 <script src="../build/calendar-price-jquery.min.js"></script>
 <script>
-$(function () {
-	
-	// 以下mockData是模拟JSON数据，一般情况是从后端(服务器端)获取
-	// 对象中'date'字段必须，且格式一定要为0000-00-00
-	// 除'date'以为的字段需自定义，然后必须在config:[]中配置
-	// 需要在日历中显示参数，需在show:[]中配置
-    var mockData = [
-        {
-            date: "2017-06-21",
-            stock: "9000",
-            buyNumMax: "50",
-            buyNumMin: "1",
-            price: "0.12",
-            priceMarket: "100.00",
-            priceSettlement: "90.00",
-            priceRetail: "99.00"
-        },{
-            date: "2017-07-12",
-            stock: "9000",
-            buyNumMax: "50",
-            buyNumMin: "1",
-            price: "12.00",
-            priceMarket: "100.00",
-            priceSettlement: "90.00",
-            priceRetail: "99.00"
-        }
-    ];
+// 以下mockData是模拟JSON数据，一般情况是从后端(服务器端)获取
+// 对象中'date'字段必须，且格式一定要为0000-00-00
+// 除'date'以为的字段需自定义，然后必须在config:[]中配置
+// 需要在日历中显示参数，需在show:[]中配置
+var mockData = [
+    {
+        date: "2017-06-21",
+        stock: "9000",
+        buyNumMax: "50",
+        buyNumMin: "1",
+        price: "0.12",
+        priceMarket: "100.00",
+        priceSettlement: "90.00",
+        priceRetail: "99.00"
+    },{
+        date: "2017-07-12",
+        stock: "9000",
+        buyNumMax: "50",
+        buyNumMin: "1",
+        price: "12.00",
+        priceMarket: "100.00",
+        priceSettlement: "90.00",
+        priceRetail: "99.00"
+    }
+];
 
-	// 插件使用
+// 使用插件
+$(function () {
+
     $.CalendarPrice({
     	// 显示日历的容器
         el: '.container',
@@ -128,6 +136,15 @@ $(function () {
         // 错误等提示信息回调函数
         error: function (err) {
             console.error(err.msg);
+        },
+        // 自定义风格(颜色)
+        style: {
+        	// 详见参数说明
+        	// ...
+        	// 头部背景色
+            //headerBgColor: '#f00',
+            // 头部文字颜色
+            //headerTextColor: '#fff'
         }
     });
 
@@ -169,6 +186,54 @@ $(function () {
 * everyday: `function` (可选)， 点击有效的`某日`，返回当天的数据。注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置。
 
 * hideFooterButton: `false` (可选)， 隐藏底部按钮（重置、确定、取消）。前台使用该插件时，则需要隐藏底部按钮，只做日历/价格显示。
+
+* style: `自定义颜色` 
+
+```javascript
+	// 自定义颜色属性
+	{
+            // 头部背景色
+            headerBgColor: '#098cc2',
+            // 头部文字颜色
+            headerTextColor: '#fff',
+            // 周一至周日背景色，及文字颜色
+            weekBgColor: '#098cc2',
+            weekTextColor: '#fff',
+            // 周末背景色，及文字颜色
+            weekendBgColor: '#098cc2',
+            weekendTextColor: '#fff',
+            // 有效日期颜色
+            validDateTextColor: '#333',
+            validDateBgColor: '#fff',
+            validDateBorderColor: '#eee',
+            // Hover
+            validDateHoverBgColor: '#098cc2',
+            validDateHoverTextColor: '#fff',
+            // 无效日期颜色
+            invalidDateTextColor: '#ccc',
+            invalidDateBgColor: '#fff',
+            invalidDateBorderColor: '#eee',
+            // 底部背景颜色
+            footerBgColor: '#fff',
+            // 重置按钮颜色
+            resetBtnBgColor: '#77c351',
+            resetBtnTextColor: '#fff',
+            resetBtnHoverBgColor: '#55b526',
+            resetBtnHoverTextColor: '#fff',
+            // 确定按钮
+            confirmBtnBgColor: '#098cc2',
+            confirmBtnTextColor: '#fff',
+            confirmBtnHoverBgColor: '#00649a',
+            confirmBtnHoverTextColor: '#fff',
+            // 取消按钮
+            cancelBtnBgColor: '#fff',
+            cancelBtnBorderColor: '#bbb',
+            cancelBtnTextColor: '#999',
+            cancelBtnHoverBgColor: '#fff',
+            cancelBtnHoverBorderColor: '#bbb',
+            cancelBtnHoverTextColor: '#666'
+        }
+```  
 
 ## CopyRight
 

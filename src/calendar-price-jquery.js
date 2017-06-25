@@ -32,6 +32,9 @@
 
         this.opts = $.extend({}, CalendarPrice.DEFAULTS, opts);
 
+        // 创建用户自定义样式
+        this.createStyleCode();
+
         // 开始日期对象
         this.startDate = this._getStartDate();
         // 结束日期对象
@@ -128,7 +131,7 @@
         });
 		
 		// 确定
-		$(this.opts.el).on('click', '.btn-submit', function () {
+		$(this.opts.el).on('click', '.btn-confirm', function () {
             me.opts.callback && me.opts.callback(me.data);
         });
 		
@@ -297,7 +300,7 @@
         if (!this.opts.hideFooterButton) {
             html += '    <div class="calendar-foot-wrapper">';
             html += '        <button class="btn btn-reset">重置</button>';
-            html += '        <button class="btn btn-submit">确定</button>';
+            html += '        <button class="btn btn-confirm">确定</button>';
             html += '        <button class="btn btn-cancel">取消</button>';
             html += '    </div>';
         }
@@ -474,7 +477,7 @@
         html += '       </div>';
         html += '   </fieldset>';
         html += '   <div class="cddsw-foot-wrapper">';
-        html += '       <button class="btn-submit">启用本设置</button>';
+        html += '       <button class="btn-confirm">启用本设置</button>';
         html += '       <button class="btn-cancel">取消</button>';
         html += '   </div>';
         html += '</div>';
@@ -571,7 +574,7 @@
         });
 
         // 保存设置
-        $('body').on('click', '.capricorncd-date-detailed-settings .btn-submit', function () {
+        $('body').on('click', '.capricorncd-date-detailed-settings .btn-confirm', function () {
             var $dateSetWrapper = $(this).closest('.cddsw-container');
 
             // 当前显示的设置日期
@@ -840,6 +843,109 @@
         }
         // 去重复、排序操作
         return this.sort(this.rmRepeat(arr, 'date'));
+    };
+
+    /**
+     * 自定义样式处理
+     */
+    fn.createStyleCode = function () {
+
+        var style = this.opts.style || {};
+        // 判断style对象中是否有属性
+        var count = 0;
+        for (var key in style) {
+            count++;
+            if (count > 0) {
+                break;
+            }
+        }
+
+        if (!count) {
+            return;
+        }
+
+        // 需要设置的样式
+        var defaultStyle = {
+            // 头部背景色
+            headerBgColor: '#098cc2',
+            // 头部文字颜色
+            headerTextColor: '#fff',
+            // 周一至周日背景色，及文字颜色
+            weekBgColor: '#098cc2',
+            weekTextColor: '#fff',
+            // 周末背景色，及文字颜色
+            weekendBgColor: '#098cc2',
+            weekendTextColor: '#fff',
+            // 有效日期颜色
+            validDateTextColor: '#333',
+            validDateBgColor: '#fff',
+            validDateBorderColor: '#eee',
+            // Hover
+            validDateHoverBgColor: '#098cc2',
+            validDateHoverTextColor: '#fff',
+            // 无效日期颜色
+            invalidDateTextColor: '#ccc',
+            invalidDateBgColor: '#fff',
+            invalidDateBorderColor: '#eee',
+            // 底部背景颜色
+            footerBgColor: '#fff',
+            // 重置按钮颜色
+            resetBtnBgColor: '#77c351',
+            resetBtnTextColor: '#fff',
+            resetBtnHoverBgColor: '#55b526',
+            resetBtnHoverTextColor: '#fff',
+            // 确定按钮
+            confirmBtnBgColor: '#098cc2',
+            confirmBtnTextColor: '#fff',
+            confirmBtnHoverBgColor: '#00649a',
+            confirmBtnHoverTextColor: '#fff',
+            // 取消按钮
+            cancelBtnBgColor: '#fff',
+            cancelBtnBorderColor: '#bbb',
+            cancelBtnTextColor: '#999',
+            cancelBtnHoverBgColor: '#fff',
+            cancelBtnHoverBorderColor: '#bbb',
+            cancelBtnHoverTextColor: '#666'
+        };
+
+        var concatStyle = $.extend({}, defaultStyle, this.opts.style);
+
+        var templateStyle = '.capricorncd-calendar-container .calendar-head-wrapper, .capricorncd-date-detailed-settings .cddsw-container .cddsw-head-wrapper{background-color: {headerBgColor}}'
+                // 头部文字颜色
+                + '.capricorncd-calendar-container .calendar-head-wrapper .calendar-month-title, .capricorncd-date-detailed-settings .cddsw-container .cddsw-head-wrapper .cddsw-title{color: {headerTextColor};}'
+                // 周背景色、文字颜色
+                + '.capricorncd-calendar-container .calendar-table-wrapper table .week{background-color:{weekBgColor};color:{weekTextColor}};'
+                // 周末背景色、文字颜色
+                + '.capricorncd-calendar-container .calendar-table-wrapper table .week th.weekend{background-color:{weekendBgColor};color:{weekendTextColor}}'
+                // 日期背景色、文字颜色、边框颜色
+                // 有效日期
+                + '.capricorncd-calendar-container .calendar-table-wrapper table td{color:{validDateTextColor};background-color:{validDateBgColor};border-bottom: 1px solid {validDateBorderColor};border-right: 1px solid {validDateBorderColor};}'
+                // Hover Bg
+                + '.capricorncd-calendar-container .calendar-table-wrapper table td.valid-hook:hover{background-color:{validDateHoverBgColor};}'
+                // Hover TextColor
+                + '.capricorncd-calendar-container .calendar-table-wrapper table td.valid-hook:hover b, .capricorncd-calendar-container .calendar-table-wrapper table td.valid-hook:hover p{color: {validDateHoverTextColor}}'
+                // 无效日期
+                // invalidDate
+                + '.capricorncd-calendar-container .calendar-table-wrapper table td.disabled{color:{invalidDateTextColor};background-color:{invalidDateBgColor}; border-bottom: 1px solid {invalidDateBorderColor};border-right: 1px solid {invalidDateBorderColor};}'
+                // 底部背景色
+                + '.capricorncd-calendar-container .calendar-foot-wrapper, .capricorncd-date-detailed-settings .cddsw-foot-wrapper{background-color:{footerBgColor}}'
+                // 重置按钮颜色
+                + '.capricorncd-calendar-container .calendar-foot-wrapper button.btn-reset{background-color: {resetBtnBgColor};border: 1px solid {resetBtnBgColor};color: {resetBtnTextColor}}.capricorncd-calendar-container .calendar-foot-wrapper button.btn-reset:hover{background-color: {resetBtnHoverBgColor};border: 1px solid {resetBtnHoverBgColor};color: {resetBtnHoverTextColor}}'
+                // 确定按钮颜色
+                + '.capricorncd-calendar-container .calendar-foot-wrapper button.btn-confirm, .capricorncd-date-detailed-settings .cddsw-foot-wrapper button.btn-confirm {background-color: {confirmBtnBgColor};border: 1px solid {confirmBtnBgColor};color: {confirmBtnTextColor}}'
+                + '.capricorncd-calendar-container .calendar-foot-wrapper button.btn-confirm:hover, .capricorncd-date-detailed-settings .cddsw-foot-wrapper button.btn-confirm:hover {background-color: {confirmBtnHoverBgColor};border: 1px solid {confirmBtnHoverBgColor};color: {confirmBtnHoverTextColor}}'
+                // 取消按钮颜色
+                + '.capricorncd-calendar-container .calendar-foot-wrapper button.btn-cancel, .capricorncd-date-detailed-settings .cddsw-foot-wrapper button.btn-cancel {background-color: {cancelBtnBgColor};color:{cancelBtnTextColor};border: 1px solid {cancelBtnBorderColor};}'
+                + '.capricorncd-calendar-container .calendar-foot-wrapper button.btn-cancel:hover, .capricorncd-date-detailed-settings .cddsw-foot-wrapper button.btn-cancel:hover {background-color: {cancelBtnHoverBgColor};border-color: {cancelBtnHoverBorderColor};color: {cancelBtnHoverTextColor}}';
+
+        var reg = null;
+        for (var key in concatStyle) {
+            // reg = new RegExp('{'+ key +'}', 'g');
+            reg = eval('/{' + key + '}/g');
+            templateStyle = templateStyle.replace(reg, concatStyle[key]);
+        }
+
+        $('head').append('<style>'+ templateStyle +'</style>')
     };
 
     /**
