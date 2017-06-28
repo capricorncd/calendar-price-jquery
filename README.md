@@ -1,6 +1,5 @@
 calendar-price-jquery
 ====
-Commodity calendar, price, inventory and other settings of jQuery plug-in
 
 基于Jquery的日历价格、库存等设置插件，也可以作为前台显示日期、价格用。需要设置的参数(字段)需自定义，详见(demo)使用方法...
 
