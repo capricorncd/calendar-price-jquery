@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <title>Capricorncd Calendar-Price-jQuery</title>
-    <link rel="stylesheet" href="../build/calendar-price-jquery.css">
+    <link rel="stylesheet" href="../dist/css/calendar-price-jquery.min.css">
     <style>
     	body {
     		margin: 0; padding: 0; font-family: "Microsoft YaHei UI";
@@ -16,7 +16,7 @@
 <div class="container"></div>
 
 <script src="jquery-1.12.4.min.js"></script>
-<script src="../build/calendar-price-jquery.min.js"></script>
+<script src="../dist/js/calendar-price-jquery.min.js"></script>
 <!--<script src="../src/calendar-price-jquery.js"></script>-->
 
 <script>
@@ -24,7 +24,7 @@ $(function () {
 
     var mockData = [
         {
-            date: "2017-06-21",
+            date: "2017-11-21",
             stock: "9000",
             buyNumMax: "50",
             buyNumMin: "1",
@@ -33,7 +33,7 @@ $(function () {
             priceSettlement: "90.00",
             priceRetail: "99.00"
         },{
-            date: "2017-07-12",
+            date: "2017-12-12",
             stock: "9000",
             buyNumMax: "50",
             buyNumMin: "1",
@@ -46,7 +46,7 @@ $(function () {
 
     for (var i = 0; i < 100; i++) {
         mockData.push({
-            date: '2017-'+ fd(i%5 + 6) +'-' + fd(randNum(30)),
+            date: '2018-'+ fd(i%8 + 1) +'-' + fd(randNum(30)),
             stock: i*21,
             buyNumMax: "50",
             buyNumMin: "1",
@@ -60,7 +60,7 @@ $(function () {
     $.CalendarPrice({
         el: '.container',
 //        startDate: '2017-08-02',
-        endDate: '2017-09',
+        endDate: '2018-09',
         data: mockData,
         // 配置需要设置的字段名称
         config: [
@@ -194,3 +194,6 @@ function fd(n) {
 
 </body>
 </html>
+
+
+
