@@ -1,5 +1,5 @@
 {
-  "name": "Calendar-pirce-jquery",
+  "name": "calendar-pirce-jquery",
   "version": "1.0.2",
   "author": "Capricorncd",
   "devDependencies": {
@@ -26,7 +26,7 @@
     "url": "https://github.com/capricorncd/calendar-pirce-jquery/issues"
   },
   "homepage": "https://github.com/capricorncd/calendar-pirce-jquery",
-  "main": "build/calendar-pirce-jquery.min.js",
+  "main": "dist/js/calendar-pirce-jquery.min.js",
   "scripts": {
     "build": "gulp"
   },

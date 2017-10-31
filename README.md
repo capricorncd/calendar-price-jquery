@@ -10,6 +10,12 @@
 
 * 自定义插件的样式风格(颜色)
 
+#### npm
+
+```
+npm install calendar-pirce-jquery --save-dev
+```
+
 ## 使用方法
 
 ```html
