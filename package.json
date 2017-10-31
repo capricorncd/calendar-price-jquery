@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/capricorncd/calendar-pirce-jquery/issues"
   },
-  "homepage": "https://github.com/capricorncd/image-process-tools",
+  "homepage": "https://github.com/capricorncd/calendar-pirce-jquery",
   "main": "build/calendar-pirce-jquery.min.js",
   "scripts": {
     "build": "gulp"
