@@ -1,6 +1,6 @@
 {
   "name": "calendar-pirce-jquery",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "author": "Capricorncd",
   "devDependencies": {
     "gulp": "^3.9.1",
@@ -28,7 +28,8 @@
   "homepage": "https://github.com/capricorncd/calendar-pirce-jquery",
   "main": "dist/js/calendar-pirce-jquery.min.js",
   "scripts": {
-    "build": "gulp"
+    "dev": "gulp --model development",
+    "build": "gulp --model production"
   },
   "license": "ISC"
 }

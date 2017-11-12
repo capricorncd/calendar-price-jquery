@@ -70,7 +70,9 @@ npm install calendar-pirce-jquery --save-dev
       // 显示日历的容器
       el: '.container',
       // 设置开始日期
+      // 可选参数，默认为系统当前日期
       startDate: '2017-08-02',
+      // 可选参数，默认为开始日期相同的1年后的日期
       // 设置日历显示结束日期
       endDate: '2017-09',
       // 初始数据
@@ -140,6 +142,9 @@ npm install calendar-pirce-jquery --save-dev
       // 错误等提示信息回调函数
       error: function (err) {
         console.error(err.msg);
+      },
+      reset: function () {
+        console.log('数据重置成功！');
       },
       // 自定义风格(颜色)
       style: {

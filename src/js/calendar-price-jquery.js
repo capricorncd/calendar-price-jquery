@@ -6,6 +6,68 @@
 
 (function ($) {
 
+  /**
+   * 数字格式化
+   * @param n number
+   */
+  var formatNumber = function (n) {
+    n = n.toString();
+    return n[1] ? n : '0' + n;
+  };
+
+  /**
+   * 转整数
+   * @param n
+   * @returns {*}
+   */
+  var toNumber = function (n) {
+    n = parseInt(n);
+    return isNaN(n) ? 0 : n;
+  };
+
+  // 判断日期是否合法
+  var isValid = function (date) {
+    if (/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})/.test(date)) {
+      return RegExp.$1 + '/' + formatNumber(RegExp.$2) + '/' + formatNumber(RegExp.$3);
+    }
+    return false;
+  };
+
+  /**
+   * 日期格式化
+   * @param date 日期对象 new Date()
+   * @param fmt format 输出日期格式 yyyy-MM-dd hh:mm:ss
+   */
+  var formatDate = function (date, fmt) {
+    if (/(y+)/i.test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+
+    var obj = {
+      'M+': date.getMonth() + 1,
+      'd+': date.getDate(),
+      'h+': date.getHours(),
+      'm+': date.getMinutes(),
+      's+': date.getSeconds()
+    }
+
+    for (var key in obj) {
+      if (new RegExp('('+ key +')').test(fmt)) {
+        var str = obj[key] + '';
+        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : formatNumber(str));
+      }
+    }
+    return fmt;
+  };
+
+  // 创建settingWindow dom
+  var createSettingWindow = function () {
+    var div = document.createElement('div');
+    div.className = 'capricorncd-date-detailed-settings';
+    div.style.display = 'none';
+    return $(div);
+  }
+
   var CODES = {
     1: '请配置日历显示的容器!',
     2: '{{text}}: 日期格式不合法!',
@@ -27,9 +89,34 @@
 
   var tomorrow = formatDate(new Date(Date.parse(TODAY) + ONE_DAY_MSEC), 'yyyy-MM-dd');
 
+  // 默认配置项
+  var DEFAULTS = {
+    data: [],
+    // 日历显示月份，不能小于系统当前月份
+    month: formatDate(TODAY, 'yyyy/MM'),
+    // 开始日期，未设置则默认为当前系统时间
+    startDate: formatDate(TODAY, 'yyyy/MM/dd'),
+    // 日历结束月份，
+    endDate: null,
+    // 取消执行函数
+    cancel: function () {},
+    // 所有范围月份内的设置数据回调
+    callback: function () {},
+    // 重置所有设置
+    reset: function () {
+      console.log('reset completed!');
+    },
+    // 异常/错误回调
+    error: function () {},
+    hideFooterButton: false,
+    style: {
+      bgColor: '#fff'
+    }
+  };
+
   /**
    * 日历价格设置jQ插件
-   * @param options
+   * @param opts
    * @constructor
    */
   function CalendarPrice(opts) {
@@ -42,51 +129,20 @@
       })
     }
 
-    this.opts = $.extend({}, CalendarPrice.DEFAULTS, opts);
+    // 日历容器
+    this.calendar = $(opts.el);
+    // 日历单日设置窗口
+    this.settingWindow = createSettingWindow();
 
-    // 创建用户自定义样式
-    this.createStyleCode();
-
-    // 开始日期对象
-    this.startDate = this._getStartDate();
-    // 结束日期对象
-    this.endDate = this._getEndDate();
-    // 日期价格数据
-    this.data = this._getOptionsData();
-
-    // 当前显示月份
-    this.month = this._formatThisMonth(this.opts.month);
+    this.opts = $.extend({}, DEFAULTS, opts);
 
     // 初始化
-    this.Initialization();
-
-    // 单日详情设置窗口
-    this.setupDayDetailWindow();
+    this.init();
 
   };
 
+  // prototype
   var fn = CalendarPrice.prototype;
-
-  // 默认配置项
-  CalendarPrice.DEFAULTS = {
-    data: [],
-    // 日历显示月份，不能小于系统当前月份
-    month: formatDate(TODAY, 'yyyy/MM'),
-    // 开始日期，未设置则默认为当前系统时间
-    startDate: formatDate(TODAY, 'yyyy/MM/dd'),
-    // 日历结束月份，
-    endDate: null,
-    // 取消执行函数
-    cancel: null,
-    // 所有范围月份内的设置数据回调
-    callback: null,
-    // 异常/错误回调
-    error: null,
-    hideFooterButton: false,
-    style: {
-      bgColor: '#fff'
-    }
-  };
 
   /**
    * 格式化月份
@@ -114,43 +170,31 @@
 
   /**
    * 初始化日历
-   * @constructor
    */
-  fn.Initialization = function () {
+  fn.init = function () {
+
+    // 创建用户自定义样式
+    this.createStyleCode();
+
+    // 开始日期对象
+    this.startDate = this._getStartDate();
+    // 结束日期对象
+    this.endDate = this._getEndDate();
+    // 日期价格数据
+    this.data = this._getOptionsData();
+
+    // 当前显示月份
+    this.month = this._formatThisMonth(this.opts.month);
+
+    // 单日详情设置窗口
+    this.initSettingWindow();
+
     // 创建this.month日历
     this.createCalendar();
 
-    var me = this;
+    // 按钮点击处理
+    this.handleClickEvent();
 
-    // 上一月
-    $(this.opts.el).on('click', '.prev-month', function () {
-      me._prevMonth();
-    });
-
-    // 下一月
-    $(this.opts.el).on('click', '.next-month', function () {
-      me._nextMonth();
-    });
-
-    // 设置价格库存
-    this.setupPriceAndStock();
-
-    // 重置
-    $(this.opts.el).on('click', '.btn-reset', function () {
-      me.data = me._getOptionsData();
-      me.createCalendar();
-      console.log('reset completed!');
-    });
-
-    // 确定
-    $(this.opts.el).on('click', '.btn-confirm', function () {
-      me.opts.callback && me.opts.callback(me.data);
-    });
-
-    // 取消
-    $(this.opts.el).on('click', '.btn-cancel', function () {
-      me.opts.cancel && me.opts.cancel();
-    });
   };
 
   /**
@@ -235,7 +279,7 @@
     var newDate = '';
     // 年月
     var reg = /(\d{4})[-\/\.](\d{1,2})[-\/\.]?/;
-    if(reg.test(date)) {
+    if (reg.test(date)) {
       newDate += RegExp.$1 + '/' + RegExp.$2;
     };
 
@@ -250,7 +294,7 @@
       // newDate 为字符串
       return new Date(newDate);
     } else {
-      this.opts.error && this.opts.error({
+      this.opts.error({
         code: 2,
         msg: CODES[2].replace('{{text}}', date)
       })
@@ -318,7 +362,7 @@
     }
     html += '</div>';
 
-    $(this.opts.el).html(html);
+    this.calendar.html(html);
 
     // 渲染数据到表格
     this.renderDataToTalbe();
@@ -335,40 +379,35 @@
     var thisMonthDays = this._getMonthDays();
     //这个月的第一天是星期几
     var firstDayIsWeek = this.month.getDay();
-
     // 日历中显示日期
     var d = 0;
-
     // tr 行数
     var rows = Math.ceil((thisMonthDays + firstDayIsWeek)/7);
-
     // td id
     var tdId = '';
-
     var html = '';
+    // 设置的开始dete和结束date
+    var startDay = formatDate(this.startDate, 'yyyy-MM-dd');
+    var endDay = formatDate(this.endDate, 'yyyy-MM-dd');
 
     // 创建日期表格
-    for(var i = 0; i < rows; i++){
+    for (var i = 0; i < rows; i++){
 
       html += '<tr>';
 
-      for(var k = 1; k <= 7; k++){
+      for (var k = 1; k <= 7; k++){
 
-        d = i*7 + k - firstDayIsWeek;
+        d = i * 7 + k - firstDayIsWeek;
 
-        if(d > 0 && d <= thisMonthDays){
+        if (d > 0 && d <= thisMonthDays){
           tdId = formatDate(this.month, 'yyyy-MM-') + formatNumber(d);
 
-          if (today == tdId) {
-            d = '今天';
-          }
+          if (today == tdId) d = '今天';
+          if (tomorrow == tdId) d = '明天';
 
-          if (tomorrow == tdId) {
-            d = '明天';
-          }
-
-          // 今天及之后的日期，显示价格、库存
-          if(tdId >= formatDate(this.startDate, 'yyyy-MM-dd')){
+          // 今天（开始日期）与设置的结束日期之间的日期
+          // 为可操作，且显示价格、库存
+          if (tdId >= startDay && tdId <= endDay) {
             html += '<td class="valid-hook" data-week="' + (k - 1) + '" data-id="' + tdId + '"><b>' + d + '</b><div class="data-hook"></div></td>';
           } else {
             html += '<td class="disabled"><b>' + d + '</b></td>';
@@ -391,23 +430,16 @@
    */
   fn.renderDataToTalbe = function () {
     var me = this;
-
-    var $thisMonthDate = $(this.opts.el).find('.valid-hook');
-
     var dayData = null;
-    // 日期内显示的数据
-
-    $thisMonthDate.each(function () {
+    var html = '';
+    // 可操作的日期td
+    this.calendar.find('.valid-hook').each(function () {
       dayData = me._getDateData($(this).data('id'));
-
-      var html = me.dayComplate().toString();
-
+      html = me.dayComplate().toString();
       if (dayData) {
-
         for (var key in dayData) {
           html = html.replace('{'+ key +'}', dayData[key]);
         }
-
         $(this).data('data', JSON.stringify(dayData)).find('.data-hook').html(html);
       } else {
         $(this).data('data', '{}');
@@ -451,11 +483,10 @@
   /**
    * 日详细设置
    */
-  fn.setupDayDetailWindow = function () {
+  fn.initSettingWindow = function () {
+
     var html = '';
-
     // capricorncd-date-detailed-settings-window: cddsw
-
     html += '<div class="cddsw-container">';
     html += '   <div class="cddsw-head-wrapper">';
     html += '       <div class="cddsw-title">0000-00-00</div>';
@@ -494,7 +525,9 @@
     html += '   </div>';
     html += '</div>';
 
-    $('body').append('<div class="capricorncd-date-detailed-settings" style="display: none">' + html + '</div>');
+    this.settingWindow.html(html);
+
+    $('body').append(this.settingWindow);
     // $('body').append('<div class="capricorncd-date-detailed-settings">' + html + '</div>');
   };
 
@@ -534,16 +567,45 @@
   };
 
   /**
-   * 设置日期价格库存
+   * 按钮点击事件处理
    */
-  fn.setupPriceAndStock = function () {
+  fn.handleClickEvent = function () {
 
     var me = this;
+
+    // ** 日历容器内按钮点击事件 *******************************************
+
+    // 上一月
+    this.calendar.on('click', '.prev-month', function () {
+      me._prevMonth();
+    });
+
+    // 下一月
+    this.calendar.on('click', '.next-month', function () {
+      me._nextMonth();
+    });
+
+    // 重置
+    this.calendar.on('click', '.btn-reset', function () {
+      me.data = me._getOptionsData();
+      me.createCalendar();
+      me.opts.reset();
+    });
+
+    // 确定
+    this.calendar.on('click', '.btn-confirm', function () {
+      me.opts.callback(me.data);
+    });
+
+    // 取消
+    this.calendar.on('click', '.btn-cancel', function () {
+      me.opts.cancel();
+    });
 
     // 获取点击日期数据
     // 渲染设置框内容
     // 显示设置窗口
-    $(this.opts.el).on('click', '.valid-hook', function () {
+    this.calendar.on('click', '.valid-hook', function () {
 
       // 当天日期
       var thisDate = $(this).data('id');
@@ -562,31 +624,32 @@
         return;
       }
 
-      var $setContainer = $('.capricorncd-date-detailed-settings');
       // 初始化input[value]
-      $setContainer.find('.cddsw-form-wrapper [type="text"]').val('');
-      $setContainer.find('[name="enableDateRange"]').prop('checked', false);
-      $setContainer.find('[name="setWeek"]').prop('checked', false);
+      me.settingWindow.find('.cddsw-form-wrapper [type="text"]').val('');
+      me.settingWindow.find('[name="enableDateRange"]').prop('checked', false);
+      me.settingWindow.find('[name="setWeek"]').prop('checked', false);
 
       // 用户传入字段
       $.each(data, function (key, val) {
-        $setContainer.find('[name="'+ key +'"]').val(val);
+        me.settingWindow.find('[name="'+ key +'"]').val(val);
       });
 
       // 栏目标题
-      $setContainer.find('.cddsw-title').html(thisDate);
-      $setContainer.find('[name="startDay"], [name="endDay"]').val(thisDate);
+      me.settingWindow.find('.cddsw-title').html(thisDate);
+      me.settingWindow.find('[name="startDay"], [name="endDay"]').val(thisDate);
 
-      $setContainer.show();
+      me.settingWindow.show();
     });
 
+    // ** 单日详情设置窗口内按钮点击事件 *******************************************
     // 关闭设置框
-    $('body').on('click', '.capricorncd-date-detailed-settings .cddsw-close, .capricorncd-date-detailed-settings .btn-cancel', function () {
-      $(this).closest('.capricorncd-date-detailed-settings').hide();
+    this.settingWindow.on('click', '.cddsw-close, .btn-cancel', function () {
+      me.settingWindow.hide();
+      // $(this).closest('.capricorncd-date-detailed-settings').hide();
     });
 
     // 保存设置
-    $('body').on('click', '.capricorncd-date-detailed-settings .btn-confirm', function () {
+    this.settingWindow.on('click', '.btn-confirm', function () {
       var $dateSetWrapper = $(this).closest('.cddsw-container');
 
       // 当前显示的设置日期
@@ -609,13 +672,13 @@
       var startDay = $batch.find('[name="startDay"]').val();
       var endDay = $batch.find('[name="endDay"]').val();
       // 是否启用日期范围
-      var IS_ENABLE = $batch.find('[name="enableDateRange"]').prop('checked');
+      var IS_ENABLE = $batch.find('[name="enableDateRange"]').is(':checked');
 
       // 周设置
-      var $week = $batch.find('[name="setWeek"]:checked');
-      var week = [];
-      $week.each(function () {
-        week.push($(this).val());
+      var weeks = [];
+      // 已选中的week checkbox
+      $batch.find('[name="setWeek"]:checked').each(function () {
+        weeks.push($(this).val());
       });
 
       // 设置的日期范围数组
@@ -629,19 +692,22 @@
         }
         setDateRangeArr = HSDRD;
         // 周n未设置，直接处理日期范围数据
-        if (week.length === 0) {
+        if (weeks.length === 0) {
           // 处理数据，并退出
           me.handleThisData(setData, setDateRangeArr);
           return;
         }
-      } else {
+      }
+      // 没有设置日期范围
+      else {
         // 周n未设置，直接处理当天数据
-        if (week.length === 0) {
+        if (weeks.length === 0) {
           // 处理数据，并退出
           me.handleThisData(setData);
           return;
-        } else {
-          // 获取范围数据，初始化的开始-结束日期
+        }
+        // 获取范围数据，初始化的开始-结束日期
+        else {
           setDateRangeArr = me.handleSetDateRangeData(
             formatDate(me.startDate, 'yyyy-MM-dd'),
             formatDate(me.endDate, 'yyyy-MM-dd')
@@ -650,79 +716,76 @@
       }; // end if IS_ENABLE
 
       // 处理与周n设置的交集
-      me.handleSetWeekData(week, setDateRangeArr, function (res) {
-        if (res.data.length > 0) {
-          me.handleThisData(setData, res.data);
-        } else {
-          me.opts.error && me.opts.error({
-            code: 3,
-            msg: CODES[3].replace('{{text}}', week.join(','))
-          });
-        }
-      });
+      var intersectionDate = me.handleSetWeekData(weeks, setDateRangeArr);
 
+      if (intersectionDate.length > 0) {
+        me.handleThisData(setData, intersectionDate);
+      } else {
+        me.opts.error({
+          code: 3,
+          msg: CODES[3].replace('{{text}}', weeks.join(','))
+        });
+      }
 
     });
   };
 
+
+  // 计算出开始日期至结束日期间的date[0000-00-00]
+  fn._createDateRangeArr = function (sd, ed) {
+    var dates = [];
+
+    var sdMsec = Date.parse(this.dateToObject(sd));
+    var edMsec = Date.parse(this.dateToObject(ed));
+    var days = Math.floor((edMsec - sdMsec)/ONE_DAY_MSEC) + 1;
+
+    for (var i = 0; i < days; i++) {
+      var date = new Date(sdMsec + ONE_DAY_MSEC * i);
+      dates.push(formatDate(date, 'yyyy-MM-dd'));
+    }
+    return dates;
+  }
+
   // 设置的日期范围数据处理
   fn.handleSetDateRangeData = function (startDay, endDay) {
 
-    var me = this;
-
     var arr = [];
-
     var sd = isValid(startDay);
     var ed = isValid(endDay);
 
     if (!sd) {
-      this.opts.error && this.opts.error({
+      this.opts.error({
         code: 4,
         msg: CODES[4]
       });
-      return false;
+      return null;
     } else if (sd < today) {
-      this.opts.error && this.opts.error({
+      this.opts.error({
         code: 5,
         msg: CODES[5]
       });
-      return false;
+      return null;
     }
 
     if (!ed) {
-      this.opts.error && this.opts.error({
+      this.opts.error({
         code: 6,
         msg: CODES[6]
       });
-      return false;
+      return null;
     } else if (ed < sd) {
-      this.opts.error && this.opts.error({
+      this.opts.error({
         code: 7,
         msg: CODES[7]
       });
-      return false;
+      return null;
     }
 
     // 开始结束日期均合法
     if (sd == ed) {
       arr.push(formatDate(this.dateToObject(sd), 'yyyy-MM-dd'));
     } else {
-      arr = createDateRangeArr(sd, ed);
-    }
-
-    // 计算出开始日期至结束日期间的date[0000-00-00]
-    function createDateRangeArr (sd, ed) {
-      var dates = [];
-
-      var sdMsec = Date.parse(me.dateToObject(sd));
-      var edMsec = Date.parse(me.dateToObject(ed));
-      var days = Math.floor((edMsec - sdMsec)/ONE_DAY_MSEC) + 1;
-
-      for (var i = 0; i < days; i++) {
-        var date = new Date(sdMsec + ONE_DAY_MSEC*i);
-        dates.push(formatDate(date, 'yyyy-MM-dd'));
-      }
-      return dates;
+      arr = this._createDateRangeArr(sd, ed);
     }
     return arr;
   };
@@ -732,28 +795,18 @@
    * 设置了周n的数据处理
    * @param week 设置的周n数组
    * @param setDateRangeArr 设置的日期范围或初始的日期范围
-   * @param callback 日期范围与周n的交集
    */
-  fn.handleSetWeekData = function (week, setDateRangeArr, callback) {
-
+  fn.handleSetWeekData = function (week, setDateRangeArr) {
     var me = this;
-
-    var weekString = week.join(',');
-
     var arr = [];
-
     $.each(setDateRangeArr, function (key, val) {
       var weekNum = me.dateToObject(val).getDay();
-      if (weekString.indexOf(weekNum) > -1) {
+      // week为数组，不用join方法indexOf无效？
+      if (week.join(',').indexOf(weekNum) > -1) {
         arr.push(val);
       }
     });
-
-    callback && callback({
-      code: 0,
-      msg: 'completed',
-      data: arr
-    });
+    return arr;
   };
 
   /**
@@ -782,7 +835,8 @@
     this.renderDataToTalbe();
 
     // 隐藏设置窗口
-    $('.capricorncd-date-detailed-settings').hide();
+    this.settingWindow.hide();
+    // $('.capricorncd-date-detailed-settings').hide();
 
   };
 
@@ -832,18 +886,16 @@
   fn._getOptionsData = function () {
     // 获取开始日期
     var startDay = formatDate(this.startDate, 'yyyy-MM-dd');
+    var endDay = formatDate(this.endDate, 'yyyy-MM-dd');
     // 新空数组，用于存放筛选出来的数据
     var arr = [];
-    // 初始配置的日期价格相关数据数组
-    var dataArr = this.opts.data;
 
-    if (dataArr && dataArr instanceof Array) {
-      for (var i = 0; i < dataArr.length; i++) {
-        if (dataArr[i].date >= startDay) {
-          arr.push(dataArr[i]);
-        }
+    $.each(this.opts.data, function (key, val) {
+      if (val.date >= startDay && val.date <= endDay) {
+        arr.push(val);
       }
-    }
+    })
+
     // 去重复、排序操作
     return this.sort(this.rmRepeat(arr, 'date'));
   };
@@ -951,73 +1003,16 @@
     $('head').append('<style>'+ templateStyle +'</style>')
   };
 
-  /**
-   * 日期格式化
-   * @param date 日期对象 new Date()
-   * @param fmt format 输出日期格式 yyyy-MM-dd hh:mm:ss
-   */
-  function formatDate (date, fmt) {
-    if (/(y+)/i.test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
-    }
-
-    var obj = {
-      'M+': date.getMonth() + 1,
-      'd+': date.getDate(),
-      'h+': date.getHours(),
-      'm+': date.getMinutes(),
-      's+': date.getSeconds()
-    }
-
-    for (var key in obj) {
-      if (new RegExp('('+ key +')').test(fmt)) {
-        var str = obj[key] + '';
-        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : formatNumber(str));
-      }
-    }
-
-    return fmt;
-
-  };
-
-  /**
-   * 数字格式化
-   * @param n number
-   */
-  function formatNumber (n) {
-    n = n.toString();
-    return n[1] ? n : '0' + n;
-  };
-
-  /**
-   * 转整数
-   * @param n
-   * @returns {*}
-   */
-  function toNumber (n) {
-    n = parseInt(n);
-    return isNaN(n) ? 0 : n;
-  };
-
-  // 判断日期是否合法
-  function isValid (date) {
-    if (/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})/.test(date)) {
-      return RegExp.$1 + '/' + formatNumber(RegExp.$2) + '/' + formatNumber(RegExp.$3);
-    }
-    return false;
-  };
 
   /**
    * asc 按升序排列 desc 按降序排列
    * @param arr 需要排序的数组
-   * @param field
-   * @param sequence
    * @return {*}
    */
   fn.sort = function (arr) {
 
     if (!(arr instanceof Array)) {
-      this.opts.error && this.opts.error({
+      this.opts.error({
         code: 8,
         msg: CODES[8]
       });
@@ -1056,16 +1051,16 @@
     var hash = {};
     var newArr = [];
 
-    for(var i = 0; i < arr.length; i++) {
+    for (var i = 0; i < arr.length; i++) {
       var val = arr[i];
       // 数组元素为对象
-      if(key) {
+      if (key) {
         try {
           val = arr[i][key];
         } catch(e) {}
       }
 
-      if(hash[val]) {
+      if (hash[val]) {
         continue;
       }
       newArr.push(arr[i]);
@@ -1074,8 +1069,6 @@
 
     return newArr;
   };
-
-
 
   $.extend({
     CalendarPrice: function (opts) {

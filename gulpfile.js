@@ -7,8 +7,8 @@ var rename = require('gulp-rename')
 var header = require('gulp-header')
 var config = require('./package.json')
 var argv = require('yargs').argv
-// Development
-var isDev = argv.dev == 1 ? true : false
+// development or production
+// argv.model === 'development'
 
 // uglify
 gulp.task('uglify', function () {
