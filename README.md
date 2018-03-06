@@ -147,8 +147,8 @@ npm install calendar-pirce-jquery --save-dev
       monthChage: function (month) {
         console.log('monthChage: ')
         console.log(month)
-        // 新增模拟数据
-        var newData = createMockData()
+        // 新增模拟数据，或服务器异步请求的数据
+        var newData = [{...}]
         // 更新日历数据
         zxCalendar.update(newData)
       },
