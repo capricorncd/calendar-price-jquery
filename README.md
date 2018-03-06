@@ -66,7 +66,7 @@ npm install calendar-pirce-jquery --save-dev
   // 使用插件
   $(function () {
 
-    $.CalendarPrice({
+    var zxCalendar = $.CalendarPrice({
       // 显示日历的容器
       el: '.container',
       // 设置开始日期
@@ -143,6 +143,15 @@ npm install calendar-pirce-jquery --save-dev
       error: function (err) {
         console.error(err.msg);
       },
+      // 月份改变返回月份数据
+      monthChage: function (month) {
+        console.log('monthChage: ')
+        console.log(month)
+        // 新增模拟数据
+        var newData = createMockData()
+        // 更新日历数据
+        zxCalendar.update(newData)
+      },
       reset: function () {
         console.log('数据重置成功！');
       },
@@ -195,6 +204,8 @@ npm install calendar-pirce-jquery --save-dev
 
 * everyday: `function` (可选)， 点击有效的`某日`，返回当天的数据。注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置。
 
+* monthChage: `function(monthData)` (可选) 月份切换时，返回切换前日历数据
+
 * hideFooterButton: `false` (可选)， 隐藏底部按钮（重置、确定、取消）。前台使用该插件时，则需要隐藏底部按钮，只做日历/价格显示。
 
 * style: `自定义颜色`
@@ -244,6 +255,12 @@ npm install calendar-pirce-jquery --save-dev
   cancelBtnHoverTextColor: '#666'
 }
 ```
+
+## Method 方法
+
+* update(newArrayData) 更新日历数据；参数为新的数据。
+
+* getMonthData() 获取当前显示月份的数据
 
 ## CopyRight
 

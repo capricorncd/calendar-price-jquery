@@ -76,7 +76,8 @@
     5: '开始日期不能小于今天',
     6: '结束日期格式错误',
     7: '结束日期不能小于开始日期',
-    8: 'sort(arg)方法的参数arg为非数组'
+    8: 'sort(arg)方法的参数arg为非数组',
+    9: 'update(data) 参数data必须为数组'
   }
 
   // 系统当前时间对象
@@ -104,8 +105,10 @@
     callback: function () {},
     // 重置所有设置
     reset: function () {
-      console.log('reset completed!');
+      // console.log('reset completed!');
     },
+    // 月份切换
+    monthChage: function () {},
     // 异常/错误回调
     error: function () {},
     hideFooterButton: false,
@@ -437,6 +440,7 @@
       dayData = me._getDateData($(this).data('id'));
       html = me.dayComplate().toString();
       if (dayData) {
+        // console.log(dayData)
         for (var key in dayData) {
           html = html.replace('{'+ key +'}', dayData[key]);
         }
@@ -452,11 +456,11 @@
    * @param {String} day_id 日期0000-00-00
    */
   fn._getDateData = function (day_id) {
-    var arr = this.data;
-    for (var i = 0; i < arr.length; i++) {
-      if (day_id == arr[i].date) {
-        return arr[i];
-        break;
+    var val
+    for (var i = 0; i < this.data.length; i++) {
+      val = this.data[i]
+      if (day_id == val.date) {
+        return val
       }
     }
     return null;
@@ -577,12 +581,16 @@
 
     // 上一月
     this.calendar.on('click', '.prev-month', function () {
+      me.opts.monthChage(me.getMonthData())
       me._prevMonth();
+      // me.opts.monthChage(formatDate(me.month, 'yyyy-MM'))
     });
 
     // 下一月
     this.calendar.on('click', '.next-month', function () {
+      me.opts.monthChage(me.getMonthData())
       me._nextMonth();
+      // me.opts.monthChage(formatDate(me.month, 'yyyy-MM'))
     });
 
     // 重置
@@ -1070,9 +1078,62 @@
     return newArr;
   };
 
+  // 获取当前月数据
+  fn.getMonthData = function () {
+    var mstr = formatDate(this.month, 'yyyy-MM')
+    var reg = new RegExp('^' + mstr + '-\\d+', 'g')
+    var i, val
+    var arr = []
+    for (i = 0; i < this.data.length; i++) {
+      val = this.data[i]
+      if (reg.test(val.date)) {
+        arr.push(val)
+      }
+    }
+    return {
+      month: mstr,
+      data: arr
+    }
+  }
+
+  // 更新数据
+  fn.update = function (newArr) {
+    if (!newArr || !(newArr instanceof Array)) {
+      this.opts.error({
+        code: 9,
+        msg: CODES[9]
+      })
+      return
+    }
+    var i, val, data, index
+    data = this.rmRepeat(newArr, 'date')
+    for (i = 0; i < data.length; i++) {
+      val = data[i]
+      val.stock *= 10
+      // console.log(val)
+      index = this._getArrIndex(val, this.data)
+      if (index === null) {
+        this.data.push(val)
+      } else {
+        this.data.splice(index, 1, val)
+      }
+    }
+    this.renderDataToTalbe()
+  }
+
+  // 获取元素在数组中的索引值
+  fn._getArrIndex = function (item, arr) {
+    for (var i = 0; i < arr.length; i++) {
+      if (item.date == arr[i].date) {
+        return i
+      }
+    }
+    return null
+  }
+
   $.extend({
     CalendarPrice: function (opts) {
-      new CalendarPrice(opts);
+      return new CalendarPrice(opts);
     }
   });
 

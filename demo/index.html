@@ -3,65 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Capricorncd Calendar-Price-jQuery</title>
+  <title>zx1984, Calendar-Price-jQuery</title>
   <link rel="stylesheet" href="../dist/css/calendar-price-jquery.min.css">
   <style>
-    body {
-      margin: 0; padding: 0; font-family: "Microsoft YaHei UI";
-    }
+    body {margin: 0; padding: 0; font-family: "Microsoft YaHei UI";}
   </style>
 </head>
 <body>
 
 <div class="container"></div>
 
-<script src="jquery-1.12.4.min.js"></script>
+<script src="js/jquery-1.12.4.min.js"></script>
+<script src="js/mock-data.js"></script>
 <script src="../dist/js/calendar-price-jquery.min.js"></script>
 <!--<script src="../src/js/calendar-price-jquery.js"></script>-->
 
 <script>
   $(function () {
+    // 生成模拟数据
+    var MOCK_DATA = createMockData()
 
-    var mockData = [
-      {
-        date: "2017-11-21",
-        stock: 9000,
-        buyNumMax: 50,
-        buyNumMin: 1,
-        price: "0.12",
-        priceMarket: "100.00",
-        priceSettlement: "90.00",
-        priceRetail: "99.00"
-      },{
-        date: "2017-12-12",
-        stock: 900,
-        buyNumMax: 50,
-        buyNumMin: 1,
-        price: "12.00",
-        priceMarket: "100.00",
-        priceSettlement: "90.00",
-        priceRetail: "99.00"
-      }
-    ];
-
-    for (var i = 0; i < 100; i++) {
-      mockData.push({
-        date: '2018-'+ fd(i%8 + 1) +'-' + fd(randNum(30)),
-        stock: i*21,
-        buyNumMax: "50",
-        buyNumMin: "1",
-        price: randNum(i) + '.00',
-        priceMarket: "100.00",
-        priceSettlement: "90.00",
-        priceRetail: "99.00"
-      });
-    }
-
-    $.CalendarPrice({
+    var zxCalendar = $.CalendarPrice({
       el: '.container',
-//        startDate: '2017-08-02',
-      endDate: '2018-2-20',
-      data: mockData,
+      // startDate: '2017-08-02',
+      endDate: '2018-12-20',
+      data: MOCK_DATA,
       // 配置需要设置的字段名称
       config: [
         {
@@ -113,17 +79,23 @@
         }
       ],
       callback: function (data) {
-        console.log('callback ....');
-        console.log(data);
+        log('callback ....');
+        log(data);
       },
       cancel: function () {
-        console.log('取消设置 ....');
+        log('取消设置 ....');
         // 取消设置
         // 这里可以触发关闭设置窗口
         // ...
       },
+      monthChage: function (month) {
+        log('monthChage: ')
+        log(month)
+        var newData = createMockData()
+        zxCalendar.update(newData)
+      },
       reset: function () {
-        console.log('数据重置成功！');
+        log('数据重置成功！');
       },
       error: function (err) {
         console.error(err.msg);
@@ -182,16 +154,11 @@
       // 隐藏底部按钮（重置、确定、取消），前台使用该插件时，则需要隐藏底部按钮
 //        hideFooterButton: true
     });
-
+    log(zxCalendar)
   });
 
-  function randNum(max) {
-    return Math.round(Math.random() * max);
-  }
-
-  function fd(n) {
-    n = n.toString();
-    return n[1] ? n : '0' + n;
+  function log (s) {
+    console.log(s)
   }
 </script>
 

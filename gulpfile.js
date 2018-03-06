@@ -36,4 +36,4 @@ gulp.task('watch', function () {
   gulp.watch('./src/stylus/*.styl', ['stylus'])
 })
 
-gulp.task('default', ['uglify', 'stylus', 'watch'])
+gulp.task('default', ['uglify', 'stylus'])
