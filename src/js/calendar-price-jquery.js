@@ -1081,12 +1081,13 @@
   // 获取当前月数据
   fn.getMonthData = function () {
     var mstr = formatDate(this.month, 'yyyy-MM')
-    var reg = new RegExp('^' + mstr + '-\\d+', 'g')
+    var reg = new RegExp('^' + mstr + '-\\d+')
     var i, val
     var arr = []
     for (i = 0; i < this.data.length; i++) {
       val = this.data[i]
       if (reg.test(val.date)) {
+        // console.log(val)
         arr.push(val)
       }
     }
