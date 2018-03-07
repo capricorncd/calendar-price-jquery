@@ -144,8 +144,8 @@ npm install calendar-pirce-jquery --save-dev
         console.error(err.msg);
       },
       // 月份改变返回月份数据
-      monthChage: function (month) {
-        console.log('monthChage: ')
+      monthChange: function (month) {
+        console.log('monthChange: ')
         console.log(month)
         // 新增模拟数据，或服务器异步请求的数据
         var newData = [{...}]
@@ -204,7 +204,7 @@ npm install calendar-pirce-jquery --save-dev
 
 * everyday: `function` (可选)， 点击有效的`某日`，返回当天的数据。注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置。
 
-* monthChage: `function(monthData)` (可选) 月份切换时，返回切换前日历数据
+* monthChange: `function(monthData)` (可选) 月份切换时，返回切换前日历数据
 
 * hideFooterButton: `false` (可选)， 隐藏底部按钮（重置、确定、取消）。前台使用该插件时，则需要隐藏底部按钮，只做日历/价格显示。
 

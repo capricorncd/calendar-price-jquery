@@ -108,7 +108,7 @@
       // console.log('reset completed!');
     },
     // 月份切换
-    monthChage: function () {},
+    monthChange: function () {},
     // 异常/错误回调
     error: function () {},
     hideFooterButton: false,
@@ -581,16 +581,16 @@
 
     // 上一月
     this.calendar.on('click', '.prev-month', function () {
-      me.opts.monthChage(me.getMonthData())
+      me.opts.monthChange(me.getMonthData())
       me._prevMonth();
-      // me.opts.monthChage(formatDate(me.month, 'yyyy-MM'))
+      // me.opts.monthChange(formatDate(me.month, 'yyyy-MM'))
     });
 
     // 下一月
     this.calendar.on('click', '.next-month', function () {
-      me.opts.monthChage(me.getMonthData())
+      me.opts.monthChange(me.getMonthData())
       me._nextMonth();
-      // me.opts.monthChage(formatDate(me.month, 'yyyy-MM'))
+      // me.opts.monthChange(formatDate(me.month, 'yyyy-MM'))
     });
 
     // 重置
