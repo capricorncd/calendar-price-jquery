@@ -1,6 +1,6 @@
 /*!
- * Created by Capricorncd on 2017/6/11.
- * https://github.com/capricorncd/calendar-price-jquery
+ * Created by zx1984 on 2017/6/11.
+ * https://github.com/zx1984/calendar-price-jquery
  */
 'use strict';
 
