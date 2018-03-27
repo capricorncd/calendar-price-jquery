@@ -262,6 +262,8 @@ npm install calendar-pirce-jquery --save-dev
 
 * getMonthData() 获取当前显示月份的数据
 
-## CopyRight
+## Copyright and license
 
-Create by Capricorncd / 2017.06
+https://github.com/zx1984
+
+Code and documentation copyright 2018. zx1984. Code released under the MIT License.

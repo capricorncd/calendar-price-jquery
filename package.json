@@ -1,6 +1,6 @@
 {
   "name": "calendar-price-jquery",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": "zx1984",
   "devDependencies": {
     "gulp": "^3.9.1",
