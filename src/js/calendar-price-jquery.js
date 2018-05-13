@@ -90,6 +90,13 @@
 
   var tomorrow = formatDate(new Date(Date.parse(TODAY) + ONE_DAY_MSEC), 'yyyy-MM-dd');
 
+  // 当月及每日数据
+  var currentMonthData = {
+    year: null,
+    month: null,
+    data: []
+  };
+
   // 默认配置项
   var DEFAULTS = {
     data: [],
@@ -393,6 +400,12 @@
     var startDay = formatDate(this.startDate, 'yyyy-MM-dd');
     var endDay = formatDate(this.endDate, 'yyyy-MM-dd');
 
+    currentMonthData.lastDay = thisMonthDays;
+    currentMonthData.year = this.month.getFullYear();
+    currentMonthData.month = this.month.getMonth() + 1
+    currentMonthData.data = []
+    var dayOptions = {}
+
     // 创建日期表格
     for (var i = 0; i < rows; i++){
 
@@ -403,6 +416,12 @@
         d = i * 7 + k - firstDayIsWeek;
 
         if (d > 0 && d <= thisMonthDays){
+          // 存储当月数据
+          dayOptions = {
+            week: k - 1,
+            day: d,
+            disabled: false
+          }
           tdId = formatDate(this.month, 'yyyy-MM-') + formatNumber(d);
 
           if (today == tdId) d = '今天';
@@ -414,7 +433,9 @@
             html += '<td class="valid-hook" data-week="' + (k - 1) + '" data-id="' + tdId + '"><b>' + d + '</b><div class="data-hook"></div></td>';
           } else {
             html += '<td class="disabled"><b>' + d + '</b></td>';
+            dayOptions.disabled = true
           }
+          currentMonthData.data.push(dayOptions)
         } else {
           html += '<td>&nbsp;</td>';
         }
@@ -522,6 +543,12 @@
     html += '               <label><input name="setWeek" type="checkbox" value="0"> 周日</label>';
     html += '           </div>';
     html += '       </div>';
+    // 当前月份设置
+    html += '       <div class="bs-content bs-days-select">';
+    html += '           <lable class="bs-lable">指定日期</lable>';
+    html += '           <div class="bs-options-wrapper"></div>';
+    html += '       </div>';
+
     html += '   </fieldset>';
     html += '   <div class="cddsw-foot-wrapper">';
     html += '       <button class="btn-confirm">启用本设置</button>';
@@ -576,6 +603,11 @@
   fn.handleClickEvent = function () {
 
     var me = this;
+
+    // 单日选中外容器
+    var $daySelectWrapper;
+    // 是否有选中范围或星期
+    var hasChecked = false;
 
     // ** 日历容器内按钮点击事件 *******************************************
 
@@ -646,10 +678,45 @@
       me.settingWindow.find('.cddsw-title').html(thisDate);
       me.settingWindow.find('[name="startDay"], [name="endDay"]').val(thisDate);
 
+      // 当月日历
+      $daySelectWrapper = me.settingWindow.find('.bs-days-select .bs-options-wrapper');
+      var dayOptions = '';
+      var isToday = false;
+      for (var i = 0; i < currentMonthData.lastDay; i++) {
+        var val = currentMonthData.data[i];
+        isToday = +thisDate.split('-').pop() === +val.day;
+        dayOptions += '<i class="day-option' + (isToday ? ' _active' : '') + (val.disabled ? ' _disabled' : '') + '">' + formatNumber(val.day) + '</i>';
+      }
+      $daySelectWrapper.html(dayOptions)
+
       me.settingWindow.show();
+      hasChecked = false;
     });
 
     // ** 单日详情设置窗口内按钮点击事件 *******************************************
+    this.settingWindow.on('change', '[type="checkbox"]', function () {
+      var $checked = me.settingWindow.find('[type="checkbox"]:checked');
+      if ($checked.length) {
+        hasChecked = true;
+        $daySelectWrapper.addClass('disabled-day-options');
+      } else {
+        hasChecked = false;
+        $daySelectWrapper.removeClass('disabled-day-options');
+      }
+    });
+
+    // 单日多选控制
+    this.settingWindow.on('click', '.day-option', function () {
+      var $this = $(this);
+      // 范围或周日被选中时，不做处理
+      if (hasChecked || $this.hasClass('_disabled')) return;
+      if ($this.hasClass('_active')) {
+        $this.removeClass('_active')
+      } else {
+        $this.addClass('_active')
+      }
+    })
+
     // 关闭设置框
     this.settingWindow.on('click', '.cddsw-close, .btn-cancel', function () {
       me.settingWindow.hide();
@@ -692,6 +759,14 @@
       // 设置的日期范围数组
       var setDateRangeArr = [];
 
+      // 单日多选项
+      var daySelcetArr = []
+      $dateSetWrapper.find('.bs-days-select ._active').each(function () {
+        var d = currentMonthData.year + '-' + formatNumber(currentMonthData.month) + '-' + formatNumber($(this).text())
+        // console.log(d)
+        daySelcetArr.push(d)
+      })
+
       // 有设置日期范围
       if (IS_ENABLE) {
         var HSDRD = me.handleSetDateRangeData(startDay, endDay);
@@ -711,7 +786,7 @@
         // 周n未设置，直接处理当天数据
         if (weeks.length === 0) {
           // 处理数据，并退出
-          me.handleThisData(setData);
+          me.handleThisData(setData, daySelcetArr);
           return;
         }
         // 获取范围数据，初始化的开始-结束日期
@@ -823,7 +898,7 @@
    * @param dateArr
    */
   fn.handleThisData = function (setData, dateArr) {
-
+    // log(dateArr)
     var arr = dateArr || [];
     var len = arr.length;
 
@@ -1130,6 +1205,12 @@
       }
     }
     return null
+  }
+
+  function log () {
+    for (var i = 0; i < arguments.length; i++) {
+      console.log(arguments[i])
+    }
   }
 
   $.extend({

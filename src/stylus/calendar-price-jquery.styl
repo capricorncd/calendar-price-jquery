@@ -1,5 +1,6 @@
 // 蓝色主题（默认主题）
-$blueMain = rgb(9, 140, 194);
+$primary = rgb(9, 140, 194);
+$primaryDeisabled = rgba(9, 140, 194, .4);
 
 $lineColor = #ddd;
 
@@ -168,7 +169,7 @@ $lineColor = #ddd;
       height: 46px;
       line-height: 46px;
       position: relative;
-      background: $blueMain;
+      background: $primary;
       .cddsw-title
         color: #fff;
         margin-left: 20px;
@@ -239,7 +240,7 @@ $lineColor = #ddd;
         .bs-options-wrapper
           flex: 1;
           flex-wrap: wrap;
-          height: 32px;
+          min-height: 32px;
           line-height: 32px;
           .drw-enable
             margin-left: 10px;
@@ -257,6 +258,38 @@ $lineColor = #ddd;
           display: flex;
           label
             flex: 1;
+      .bs-days-select
+        .bs-options-wrapper
+          .day-option
+            display: block;
+            margin: 0 2px 2px 0;
+            font-style: normal;
+            float: left;
+            width: 32px;
+            height: 32px;
+            text-align: center;
+            line-height: 32px;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: 1px solid $lineColor;
+            &._active
+              border-color: $primary;
+              color: #fff;
+              background-color: $primary;
+            &._disabled
+              border-color: #eee;
+              color: #fff;
+              background-color: #eee;
+              cursor: not-allowed;
+        .disabled-day-options
+          .day-option
+            border-color: #eee;
+            color: #fff;
+            background-color: #eee;
+            cursor: not-allowed;
+            &._active
+              border-color: $primaryDeisabled;
+              background-color: $primaryDeisabled;
 
 @media only screen and (max-width: 640px)
   .capricorncd-date-detailed-settings

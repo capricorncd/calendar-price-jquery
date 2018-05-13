@@ -8,7 +8,8 @@ var header = require('gulp-header')
 var config = require('./package.json')
 var argv = require('yargs').argv
 // development or production
-// argv.model === 'development'
+var isProd = argv.model === 'production'
+console.log(isProd)
 
 // uglify
 gulp.task('uglify', function () {
@@ -36,4 +37,8 @@ gulp.task('watch', function () {
   gulp.watch('./src/stylus/*.styl', ['stylus'])
 })
 
-gulp.task('default', ['uglify', 'stylus', 'watch'])
+if (isProd) {
+  gulp.task('default', ['uglify', 'stylus'])
+} else {
+  gulp.task('default', ['uglify', 'stylus', 'watch'])
+}
