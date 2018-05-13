@@ -177,10 +177,13 @@ npm install calendar-pirce-jquery --save-dev
 
 ## 使用效果图
 
-![calendar-price-jquery](demo/preview-mobile.png)
+PC端
 
 ![calendar-price-jquery](demo/preview-pc.png)
 
+移动端
+
+![calendar-price-jquery](demo/preview-mobile.png)
 
 ## Options 参数
 
