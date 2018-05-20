@@ -1,8 +1,11 @@
 // 蓝色主题（默认主题）
-$primary = rgb(9, 140, 194);
-$primaryDeisabled = rgba(9, 140, 194, .4);
+$colorPrimary = rgb(9, 140, 194);
+$colorPrimaryDeisabled = rgba(9, 140, 194, .4);
 
 $lineColor = #ddd;
+
+$colorSuccess = rgba(85, 181, 38, .8);
+$colorSuccessHover = rgb(85, 181, 38);
 
 .clearfix:after
   content: '';
@@ -14,6 +17,46 @@ $lineColor = #ddd;
   width: 0;
   height: 0;
   clear: both;
+
+// 通用样式
+.capricorncd-calendar-container, .capricorncd-date-detailed-settings
+  *
+    margin: 0;
+    padding: 0;
+  .bg-primary
+    color: #fff;
+    background-color: $colorPrimary;
+    border-color: $colorPrimary;
+  .bg-success
+    color: #fff;
+    background-color: $colorSuccess;
+    border-color: $colorSuccess;
+  .color-primary
+    color: $colorPrimary;
+  .color-success
+    color: $colorSuccess;
+  ._checkbox
+    display: inline-block;
+    margin: 0 2px 2px 0;
+    padding: 0 8px;
+    font-style: normal;
+    float: left;
+    min-width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 28px;
+    cursor: pointer;
+    box-sizing: border-box;
+    border: 1px solid $lineColor;
+    &._active
+      border-color: $colorPrimary;
+      color: #fff;
+      background-color: $colorPrimary;
+    &._disabled
+      border-color: #eee;
+      color: #fff;
+      background-color: #eee;
+      cursor: not-allowed;
 
 //日历
 .capricorncd-calendar-container
@@ -38,28 +81,29 @@ $lineColor = #ddd;
       z-index: 1;
       width: 48px;
       height: 48px;
-      background-image: url('../img/arrow.png');
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-size: 20% auto;
-      text-align: center;
       cursor: pointer;
       &:before
         display: inline-block;
-        margin-top: 13px;
-        width: 20px;
-        height: 20px;
+        position: absolute;
+        top: 15px;
+        width: 11px;
+        height: 17px;
+        background-image: url('../img/arrow.png');
+        background-repeat: no-repeat;
         overflow: hidden;
-        border: 1px solid #fff;
-        border-radius: 50%;
         content: '';
       &:hover
         opacity: .8;
       &.prev-month
         left: 0;
-        transform: rotate(180deg);
+        &:before
+          left: 17px;
+          background-position: 0 0;
       &.next-month
         right: 0;
+        &:before
+          left: 19px;
+          background-position: -12px 0;
   .calendar-table-wrapper
     table
       width: 100%;
@@ -101,29 +145,29 @@ $lineColor = #ddd;
 //日历/单日设置框页脚
 .capricorncd-calendar-container .calendar-foot-wrapper,
 .capricorncd-date-detailed-settings .cddsw-foot-wrapper
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
   height: 60px;
+  text-align: right;
   button
     display: inline-block;
-    margin-right: 10px;
-    width: 60px;
+    margin: 15px 0 0 10px;
+    min-width: 60px;
     height: 30px;
     text-align: center;
     cursor: pointer;
-    border: 0;
-    background: none;
     outline: none;
     color: #fff;
-    &:last-child
+    border: 1px solid #ccc;
+    &.btn-cancel
       margin-right: 20px;
     &.btn-reset
-      background-color: rgba(85, 181, 38, .8);
-      border: 1px solid rgba(85, 181, 38, .8);
       &:hover
-        background-color: rgb(85, 181, 38);
-        border-color: rgba(85, 181, 38, 1);
+        background-color: $colorSuccessHover;
+        border-color: $colorSuccessHover;
+    &.btn-batch
+      border-color: $colorSuccess;
+      &:hover
+        background-color: $colorSuccessHover;
+        border-color: $colorSuccessHover;
     &.btn-confirm
       background-color: rgb(9, 140, 194);
       border: 1px solid rgb(9, 140, 194);
@@ -131,17 +175,10 @@ $lineColor = #ddd;
         background-color: rgb(0, 100, 154);
         border-color: rgb(0, 100, 154);
     &.btn-cancel
-      background-color: #fff;
       color: #999;
-      border: 1px solid #ccc;
       &:hover
         color: #666;
         border-color: #bbb;
-
-.capricorncd-date-detailed-settings .cddsw-foot-wrapper
-  .btn-confirm
-    width: 100px;
-
 
 /*
  * 单独日期价格设置
@@ -156,20 +193,17 @@ $lineColor = #ddd;
   height: 100%;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, .3);
+  background: url('../img/bg-black.png');
   .cddsw-container
     width: 640px;
     position: relative;
     background-color: #FFF;
     font-size: 14px;
-    *
-      margin: 0;
-      padding: 0;
     .cddsw-head-wrapper
       height: 46px;
       line-height: 46px;
       position: relative;
-      background: $primary;
+      background: $colorPrimary;
       .cddsw-title
         color: #fff;
         margin-left: 20px;
@@ -197,22 +231,27 @@ $lineColor = #ddd;
     .cddsw-form-wrapper
       padding-top: 20px;
       li
-        display: flex;
         position: relative;
         float: left;
         height: 31px;
         line-height: 31px;
         width: 49.9%;
         list-style: none;
+        &:before
+          display: table
+          content: ''
         label
-          flex: 0 0 80px;
-          margin: 0 10px 0 20px;
+          display: block
+          float left
+          width 110px;
+          padding: 0 10px 0 20px;
           text-align-last: justify;
+          box-sizing border-box
         input
-          flex: 1;
-          margin-right: 20px;
+          display: block
+          margin: 0 20px 0 110px;
           padding: 0 4px;
-          height: 30px;
+          min-height: 30px;
           line-height: 30px;
           border: 1px solid $lineColor;
           background: #fff;
@@ -229,17 +268,20 @@ $lineColor = #ddd;
         line-height: 46px;
         font-size: 14px;
       .bs-content
-        display: flex;
+        display: block;
+        &:before
+          display: table;
+          content: '';
         .bs-lable
-          flex: 0 0 80px;
+          float left
+          width 110px
           text-align-last: justify;
-          margin-left: 20px;
-          margin-right: 10px;
-          height: 32px;
+          padding: 0 10px 0 20px;
+          min-height: 32px;
           line-height: 32px;
+          box-sizing border-box
         .bs-options-wrapper
-          flex: 1;
-          flex-wrap: wrap;
+          margin-left: 110px;
           min-height: 32px;
           line-height: 32px;
           .drw-enable
@@ -252,44 +294,30 @@ $lineColor = #ddd;
             border: 1px solid $lineColor;
             background: #fff;
       .bs-week-chekbox
-        display: flex;
         margin-top: 15px;
-        .bs-options-wrapper
-          display: flex;
-          label
-            flex: 1;
       .bs-days-select
+        margin-top: 14px;
         .bs-options-wrapper
-          .day-option
-            display: block;
-            margin: 0 2px 2px 0;
-            font-style: normal;
-            float: left;
+          ._checkbox
+            padding: 0;
             width: 32px;
-            height: 32px;
-            text-align: center;
-            line-height: 32px;
-            cursor: pointer;
-            box-sizing: border-box;
-            border: 1px solid $lineColor;
-            &._active
-              border-color: $primary;
-              color: #fff;
-              background-color: $primary;
-            &._disabled
-              border-color: #eee;
-              color: #fff;
-              background-color: #eee;
-              cursor: not-allowed;
-        .disabled-day-options
-          .day-option
-            border-color: #eee;
-            color: #fff;
-            background-color: #eee;
-            cursor: not-allowed;
-            &._active
-              border-color: $primaryDeisabled;
-              background-color: $primaryDeisabled;
+      .disabled-options
+        ._checkbox
+          border-color: #eee;
+          color: #fff;
+          background-color: #eee;
+          cursor: not-allowed;
+          &._active
+            border-color: $colorPrimaryDeisabled;
+            background-color: $colorPrimaryDeisabled;
+
+// ie浏览器
+.capricorncd-date-detailed-settings.ie
+  .cddsw-container
+    position: absolute;
+    left: 50%
+    margin-left: -320px;
+    width: 640px;
 
 @media only screen and (max-width: 640px)
   .capricorncd-date-detailed-settings

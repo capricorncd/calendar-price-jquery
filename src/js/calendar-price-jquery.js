@@ -60,12 +60,35 @@
     return fmt;
   };
 
+  // 小于或等于ie9
+  // [计]LE; less-than-or-equal-to
+  function isLeIE9 () {
+    var nu = navigator.userAgent;
+    var version = null;
+    if (/MSIE (\d+)\./i.test(nu)) {
+      version = RegExp.$1;
+    }
+    return version && +version <= 9;
+  }
+
   // 创建settingWindow dom
-  var createSettingWindow = function () {
+  function createSettingWindow () {
     var div = document.createElement('div');
-    div.className = 'capricorncd-date-detailed-settings';
+    div.className = 'capricorncd-date-detailed-settings' + (isLeIE9() ? ' ie' : '');
     div.style.display = 'none';
     return $(div);
+  }
+
+  /**
+   * 垂直居中设置窗口
+   */
+  function verticalCenter ($el) {
+    if (isLeIE9()) {
+      var h = $el.height();
+      var wh = $(window).height();
+      console.log(h, wh)
+      $el.css('top', (wh - h) / 2 + 'px');
+    }
   }
 
   var CODES = {
@@ -130,10 +153,10 @@
    * @constructor
    */
   function CalendarPrice(opts) {
-
+    this.opts = $.extend({}, DEFAULTS, opts);
     // 日历显示容器
     if (!opts.el) {
-      opts.error && opts.error({
+      opts.error({
         code: 1,
         msg: CODES[1]
       })
@@ -141,14 +164,9 @@
 
     // 日历容器
     this.calendar = $(opts.el);
-    // 日历单日设置窗口
-    this.settingWindow = createSettingWindow();
-
-    this.opts = $.extend({}, DEFAULTS, opts);
 
     // 初始化
     this.init();
-
   };
 
   // prototype
@@ -182,6 +200,8 @@
    * 初始化日历
    */
   fn.init = function () {
+    // 日历单日设置窗口
+    this.settingWindow = createSettingWindow();
 
     // 创建用户自定义样式
     this.createStyleCode();
@@ -365,9 +385,10 @@
     // 是否显示按钮组
     if (!this.opts.hideFooterButton) {
       html += '    <div class="calendar-foot-wrapper">';
-      html += '        <button class="btn btn-reset">重置</button>';
-      html += '        <button class="btn btn-confirm">确定</button>';
-      html += '        <button class="btn btn-cancel">取消</button>';
+      html += '        <button class="btn bg-success btn-reset">重置</button>';
+      html += '        <button class="btn bg-success btn-batch">批量操作</button>';
+      html += '        <button class="btn bg-primary btn-confirm">确定</button>';
+      html += '        <button class="btn bg-white btn-cancel">取消</button>';
       html += '    </div>';
     }
     html += '</div>';
@@ -523,7 +544,7 @@
     html += '   <fieldset class="cddsw-batch-settings clearfix">';
     html += '       <legend class="bs-title"><b>批量设置</b></legend>';
     html += '       <div class="bs-content">';
-    html += '           <lable class="bs-lable">日期范围</lable>';
+    html += '           <div class="bs-lable">日期范围</div>';
     html += '           <div class="bs-options-wrapper">';
     html += '               <input class="itext" name="startDay" type="text">';
     html += '               <span class="white-space">-</span>';
@@ -532,26 +553,26 @@
     html += '           </div>';
     html += '       </div>';
     html += '       <div class="bs-content bs-week-chekbox">';
-    html += '           <lable class="bs-lable">设置星期</lable>';
+    html += '           <div class="bs-lable">设置星期</div>';
     html += '           <div class="bs-options-wrapper">';
-    html += '               <label><input name="setWeek" type="checkbox" value="1"> 周一</label>';
-    html += '               <label><input name="setWeek" type="checkbox" value="2"> 周二</label>';
-    html += '               <label><input name="setWeek" type="checkbox" value="3"> 周三</label>';
-    html += '               <label><input name="setWeek" type="checkbox" value="4"> 周四</label>';
-    html += '               <label><input name="setWeek" type="checkbox" value="5"> 周五</label>';
-    html += '               <label><input name="setWeek" type="checkbox" value="6"> 周六</label>';
-    html += '               <label><input name="setWeek" type="checkbox" value="0"> 周日</label>';
+    html += '               <i class="_checkbox" data-value="1">周一</i>';
+    html += '               <i class="_checkbox" data-value="2">周二</i>';
+    html += '               <i class="_checkbox" data-value="3">周三</i>';
+    html += '               <i class="_checkbox" data-value="4">周四</i>';
+    html += '               <i class="_checkbox" data-value="5">周五</i>';
+    html += '               <i class="_checkbox" data-value="6">周六</i>';
+    html += '               <i class="_checkbox" data-value="0">周日</i>';
     html += '           </div>';
     html += '       </div>';
     // 当前月份设置
     html += '       <div class="bs-content bs-days-select">';
-    html += '           <lable class="bs-lable">指定日期</lable>';
+    html += '           <div class="bs-lable">指定日期</div>';
     html += '           <div class="bs-options-wrapper"></div>';
     html += '       </div>';
 
     html += '   </fieldset>';
     html += '   <div class="cddsw-foot-wrapper">';
-    html += '       <button class="btn-confirm">启用本设置</button>';
+    html += '       <button class="btn-confirm">确定</button>';
     html += '       <button class="btn-cancel">取消</button>';
     html += '   </div>';
     html += '</div>';
@@ -606,8 +627,10 @@
 
     // 单日选中外容器
     var $daySelectWrapper;
-    // 是否有选中范围或星期
-    var hasChecked = false;
+    // 日期范围被启用
+    var dateRangeOn = false;
+    // 星期又被选中
+    var weekRangeOn = false;
 
     // ** 日历容器内按钮点击事件 *******************************************
 
@@ -685,31 +708,59 @@
       for (var i = 0; i < currentMonthData.lastDay; i++) {
         var val = currentMonthData.data[i];
         isToday = +thisDate.split('-').pop() === +val.day;
-        dayOptions += '<i class="day-option' + (isToday ? ' _active' : '') + (val.disabled ? ' _disabled' : '') + '">' + formatNumber(val.day) + '</i>';
+        dayOptions += '<i class="_checkbox' + (isToday ? ' _active' : '') + (val.disabled ? ' _disabled' : '') + '">' + formatNumber(val.day) + '</i>';
       }
       $daySelectWrapper.html(dayOptions)
 
       me.settingWindow.show();
-      hasChecked = false;
+      verticalCenter(me.settingWindow.find('.cddsw-container'));
+      initSettingWindow();
     });
+
+    function initSettingWindow () {
+      dateRangeOn = false;
+      weekRangeOn = false;
+      $daySelectWrapper.removeClass('disabled-options');
+      me.settingWindow.find('.bs-week-chekbox ._active').removeClass('_active');
+    }
 
     // ** 单日详情设置窗口内按钮点击事件 *******************************************
     this.settingWindow.on('change', '[type="checkbox"]', function () {
-      var $checked = me.settingWindow.find('[type="checkbox"]:checked');
-      if ($checked.length) {
-        hasChecked = true;
-        $daySelectWrapper.addClass('disabled-day-options');
+      var isChecked = $(this).is(':checked');
+      if (isChecked) {
+        dateRangeOn = true;
+        $daySelectWrapper.addClass('disabled-options');
       } else {
-        hasChecked = false;
-        $daySelectWrapper.removeClass('disabled-day-options');
+        dateRangeOn = false;
+        if (!weekRangeOn) $daySelectWrapper.removeClass('disabled-options');
       }
     });
 
-    // 单日多选控制
-    this.settingWindow.on('click', '.day-option', function () {
+    // 星期被选中
+    this.settingWindow.on('click', '.bs-week-chekbox ._checkbox', function () {
+      var $this = $(this);
+      if ($this.hasClass('_active')) {
+        $this.removeClass('_active');
+        var $checked = $this.siblings('._active');
+        if ($checked.length) {
+          weekRangeOn = true
+          $daySelectWrapper.addClass('disabled-options');
+        } else {
+          weekRangeOn = false
+          if (!dateRangeOn) $daySelectWrapper.removeClass('disabled-options');
+        }
+      } else {
+        $this.addClass('_active');
+        weekRangeOn = true;
+        $daySelectWrapper.addClass('disabled-options');
+      }
+    });
+
+    // 单日选择控制
+    this.settingWindow.on('click', '.bs-days-select ._checkbox', function () {
       var $this = $(this);
       // 范围或周日被选中时，不做处理
-      if (hasChecked || $this.hasClass('_disabled')) return;
+      if (dateRangeOn || weekRangeOn || $this.hasClass('_disabled')) return;
       if ($this.hasClass('_active')) {
         $this.removeClass('_active')
       } else {
@@ -752,8 +803,8 @@
       // 周设置
       var weeks = [];
       // 已选中的week checkbox
-      $batch.find('[name="setWeek"]:checked').each(function () {
-        weeks.push($(this).val());
+      $batch.find('.bs-week-chekbox ._active').each(function () {
+        weeks.push($(this).data('value'));
       });
 
       // 设置的日期范围数组
