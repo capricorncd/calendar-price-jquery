@@ -386,7 +386,7 @@
     if (!this.opts.hideFooterButton) {
       html += '    <div class="calendar-foot-wrapper">';
       html += '        <button class="btn bg-success btn-reset">重置</button>';
-      html += '        <button class="btn bg-success btn-batch">批量操作</button>';
+      // html += '        <button class="btn bg-success btn-batch">批量操作</button>';
       html += '        <button class="btn bg-primary btn-confirm">确定</button>';
       html += '        <button class="btn bg-white btn-cancel">取消</button>';
       html += '    </div>';
