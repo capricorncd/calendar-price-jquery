@@ -145,11 +145,14 @@ $colorSuccessHover = rgb(85, 181, 38);
 //日历/单日设置框页脚
 .capricorncd-calendar-container .calendar-foot-wrapper,
 .capricorncd-date-detailed-settings .cddsw-foot-wrapper
+  position relative
+  margin-top: 1px;
   height: 60px;
   text-align: right;
   button
     display: inline-block;
     margin: 15px 0 0 10px;
+    padding: 0 15px;
     min-width: 60px;
     height: 30px;
     text-align: center;
@@ -164,10 +167,11 @@ $colorSuccessHover = rgb(85, 181, 38);
         background-color: $colorSuccessHover;
         border-color: $colorSuccessHover;
     &.btn-batch
-      border-color: $colorSuccess;
+      background-color: rgb(9, 140, 194);
+      border: 1px solid rgb(9, 140, 194);
       &:hover
-        background-color: $colorSuccessHover;
-        border-color: $colorSuccessHover;
+        background-color: rgb(0, 100, 154);
+        border-color: rgb(0, 100, 154);
     &.btn-confirm
       background-color: rgb(9, 140, 194);
       border: 1px solid rgb(9, 140, 194);
@@ -180,6 +184,9 @@ $colorSuccessHover = rgb(85, 181, 38);
         color: #666;
         border-color: #bbb;
 
+  .btn-batch
+    position absolute
+    left: 10px;
 /*
  * 单独日期价格设置
  */
@@ -229,6 +236,36 @@ $colorSuccessHover = rgb(85, 181, 38);
         &:hover
           i
             opacity: 1;
+    .cddsw-tab-wrapper
+      position relative
+      margin 20px 0 0 0;
+      padding: 0 15px;
+      overflow: hidden
+      box-sizing border-box
+      &:after
+        display: block
+        position: absolute
+        left 0
+        bottom 0
+        width 100%
+        content: '';
+        border-bottom: 1px solid $lineColor;
+      .cdssw-tab-item
+        position relative
+        z-index 2
+        display: inline-block
+        margin 0 5px 0;
+        padding: 0 10px;
+        height: 32px;
+        line-height: 32px
+        cursor pointer
+        border: 1px solid $lineColor
+        border-bottom: 0;
+        color #999;
+        &._active
+          font-weight 800
+          color: #333;
+          background-color: #fff;
     .cddsw-form-wrapper
       padding-top: 20px;
       li
@@ -270,34 +307,20 @@ $colorSuccessHover = rgb(85, 181, 38);
         font-size: 14px;
       .bs-content
         display: block;
-        &:before
-          display: table;
-          content: '';
-        .bs-lable
-          float left
-          width 110px
-          text-align-last: justify;
-          padding: 0 10px 0 20px;
-          min-height: 32px;
-          line-height: 32px;
-          box-sizing border-box
         .bs-options-wrapper
-          margin-left: 110px;
+          margin-left: 20px;
           min-height: 32px;
           line-height: 32px;
           .drw-enable
             margin-left: 10px;
           .itext
             padding: 0 4px;
-            width: 179px;
+            width: 40%;
             height: 30px;
             line-height: 30px;
             border: 1px solid $lineColor;
             background: #fff;
-      .bs-week-chekbox
-        margin-top: 15px;
       .bs-days-select
-        margin-top: 14px;
         .bs-options-wrapper
           ._checkbox
             padding: 0;
@@ -339,8 +362,6 @@ $colorSuccessHover = rgb(85, 181, 38);
           .bs-options-wrapper
             margin-left: 20px;
             height: auto;
-            .itext
-              width: 80px;
           .bs-options-wrapper
             label
               flex: 0 0 25%;

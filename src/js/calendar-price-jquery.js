@@ -3,42 +3,40 @@
  * https://github.com/zx1984/calendar-price-jquery
  */
 'use strict';
-
 (function ($) {
-
   /**
    * 数字格式化
    * @param n number
    */
-  var formatNumber = function (n) {
+  function formatNumber (n) {
     n = n.toString();
     return n[1] ? n : '0' + n;
-  };
+  }
 
   /**
    * 转整数
    * @param n
    * @returns {*}
    */
-  var toNumber = function (n) {
+  function toNumber (n) {
     n = parseInt(n);
     return isNaN(n) ? 0 : n;
-  };
+  }
 
   // 判断日期是否合法
-  var isValid = function (date) {
+  function isValid (date) {
     if (/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})/.test(date)) {
       return RegExp.$1 + '/' + formatNumber(RegExp.$2) + '/' + formatNumber(RegExp.$3);
     }
     return false;
-  };
+  }
 
   /**
    * 日期格式化
    * @param date 日期对象 new Date()
    * @param fmt format 输出日期格式 yyyy-MM-dd hh:mm:ss
    */
-  var formatDate = function (date, fmt) {
+  function formatDate (date, fmt) {
     if (/(y+)/i.test(fmt)) {
       fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
     }
@@ -58,7 +56,7 @@
       }
     }
     return fmt;
-  };
+  }
 
   // 小于或等于ie9
   // [计]LE; less-than-or-equal-to
@@ -122,6 +120,7 @@
 
   // 默认配置项
   var DEFAULTS = {
+    config: [],
     data: [],
     // 日历显示月份，不能小于系统当前月份
     month: formatDate(TODAY, 'yyyy/MM'),
@@ -216,7 +215,7 @@
     // 当前显示月份
     this.month = this._formatThisMonth(this.opts.month);
 
-    // 单日详情设置窗口
+    // 设置窗口
     this.initSettingWindow();
 
     // 创建this.month日历
@@ -385,8 +384,8 @@
     // 是否显示按钮组
     if (!this.opts.hideFooterButton) {
       html += '    <div class="calendar-foot-wrapper">';
+      html += '        <button class="btn bg-primary btn-batch">批量操作</button>';
       html += '        <button class="btn bg-success btn-reset">重置</button>';
-      // html += '        <button class="btn bg-success btn-batch">批量操作</button>';
       html += '        <button class="btn bg-primary btn-confirm">确定</button>';
       html += '        <button class="btn bg-white btn-cancel">取消</button>';
       html += '    </div>';
@@ -495,14 +494,14 @@
 
   /**
    * 获取day设置数据
-   * @param {String} day_id 日期0000-00-00
+   * @param {String} dayId 日期0000-00-00
    */
-  fn._getDateData = function (day_id) {
+  fn._getDateData = function (dayId) {
     var val
     for (var i = 0; i < this.data.length; i++) {
-      val = this.data[i]
-      if (day_id == val.date) {
-        return val
+      val = this.data[i];
+      if (dayId === val.date) {
+        return val;
       }
     }
     return null;
@@ -518,7 +517,7 @@
     // 第几月
     var y = formatDate(month, 'yyyy');
     var m = formatDate(month, 'MM');
-    if (m == 12) {
+    if (+m === 12) {
       return 31;
     } else {
       // month的下个月第一天，减去一天则为该月的最后一天
@@ -538,22 +537,28 @@
     html += '       <div class="cddsw-title">0000-00-00</div>';
     html += '       <a class="cddsw-close"><i></i></a>';
     html += '   </div>';
+    html += '   <div class="cddsw-tab-wrapper">';
+    html += '     <span class="cdssw-tab-item _active" data-target="alls">所有日期</span>';
+    html += '     <span class="cdssw-tab-item" data-target="week">按星期</span>';
+    html += '     <span class="cdssw-tab-item" data-target="days">按号数</span>';
+    html += '   </div>';
     html += '   <ul class="cddsw-form-wrapper clearfix">';
     html +=         this._createDaySetupInputGroup();
     html += '   </ul>';
-    html += '   <fieldset class="cddsw-batch-settings clearfix">';
-    html += '       <legend class="bs-title"><b>批量设置</b></legend>';
+    html += ' <div class="cddsw-tab-content-hook">'
+    html += '   <fieldset class="cddsw-batch-settings tab-alls-content clearfix">';
+    html += '       <legend class="bs-title"><b>日期范围</b></legend>';
     html += '       <div class="bs-content">';
-    html += '           <div class="bs-lable">日期范围</div>';
     html += '           <div class="bs-options-wrapper">';
-    html += '               <input class="itext" name="startDay" type="text">';
+    html += '               <input class="itext" name="startDay" type="date">';
     html += '               <span class="white-space">-</span>';
-    html += '               <input class="itext" name="endDay" type="text">';
-    html += '               <label class="drw-enable"><input name="enableDateRange" type="checkbox"> 启用</label>';
+    html += '               <input class="itext" name="endDay" type="date">';
     html += '           </div>';
     html += '       </div>';
+    html += '   </fieldset>';
+    html += '   <fieldset class="cddsw-batch-settings tab-week-content clearfix" style="display: none">';
+    html += '       <legend class="bs-title"><b>设置星期</b></legend>';
     html += '       <div class="bs-content bs-week-chekbox">';
-    html += '           <div class="bs-lable">设置星期</div>';
     html += '           <div class="bs-options-wrapper">';
     html += '               <i class="_checkbox" data-value="1">周一</i>';
     html += '               <i class="_checkbox" data-value="2">周二</i>';
@@ -564,13 +569,14 @@
     html += '               <i class="_checkbox" data-value="0">周日</i>';
     html += '           </div>';
     html += '       </div>';
-    // 当前月份设置
+    html += '   </fieldset>';
+    html += '   <fieldset class="cddsw-batch-settings tab-days-content clearfix" style="display: none">';
+    html += '       <legend class="bs-title"><b>指定日期</b></legend>';
     html += '       <div class="bs-content bs-days-select">';
-    html += '           <div class="bs-lable">指定日期</div>';
     html += '           <div class="bs-options-wrapper"></div>';
     html += '       </div>';
-
     html += '   </fieldset>';
+    html += ' </div>';
     html += '   <div class="cddsw-foot-wrapper">';
     html += '       <button class="btn-confirm">确定</button>';
     html += '       <button class="btn-cancel">取消</button>';
@@ -626,11 +632,12 @@
     var me = this;
 
     // 单日选中外容器
-    var $daySelectWrapper;
-    // 日期范围被启用
-    var dateRangeOn = false;
-    // 星期又被选中
-    var weekRangeOn = false;
+    var $daySelectWrapper = me.settingWindow.find('.bs-days-select .bs-options-wrapper');
+    // 批量操作tab, content
+    var $tabWrapper = me.settingWindow.find('.cddsw-tab-wrapper');
+    var $TabContent = me.settingWindow.find('.cddsw-tab-content-hook');
+    // 设置窗口提交按钮
+    var $swSubmitBtn = me.settingWindow.find('.btn-confirm');
 
     // ** 日历容器内按钮点击事件 *******************************************
 
@@ -666,18 +673,38 @@
     });
 
     // 批量设置
-    // this.calendar.on('click', '.btn-batch', function () {
-    //
-    //   me.settingWindow.show();
-    //   verticalCenter(me.settingWindow.find('.cddsw-container'));
-    //   initSettingWindow();
-    // })
+    this.calendar.on('click', '.btn-batch', function () {
+      $tabWrapper.show();
+      $TabContent.show();
+      var ym = currentMonthData.year + '-' + formatNumber(currentMonthData.month)
+
+      // 初始化input[value]
+      me.settingWindow.find('.cddsw-form-wrapper [type="text"]').val('');
+      me.settingWindow.find('[name="startDay"]').val(ym + '-01');
+      me.settingWindow.find('[name="endDay"]').val(ym + '-' + currentMonthData.data[currentMonthData.data.length - 1].day);
+
+      // 当月日历
+      var dayOptions = '';
+      for (var i = 0; i < currentMonthData.lastDay; i++) {
+        var val = currentMonthData.data[i];
+        dayOptions += '<i class="_checkbox' + (val.disabled ? ' _disabled' : '') + '">' + formatNumber(val.day) + '</i>';
+      }
+      $daySelectWrapper.html(dayOptions)
+
+      var data = {}
+      // 获取配置默认value
+      $.each(me.opts.config, function (key, val) {
+        data[val.key] = val.value;
+      })
+      _initSettingWindow(ym, data);
+    })
 
     // 获取点击日期数据
     // 渲染设置框内容
     // 显示设置窗口
     this.calendar.on('click', '.valid-hook', function () {
-
+      $tabWrapper.hide();
+      $TabContent.hide();
       // 当天日期
       var thisDate = $(this).data('id');
       // 当前日的数据
@@ -689,92 +716,53 @@
         data = {};
       }
 
+      _initSettingWindow(thisDate, data);
+    });
+
+    function _initSettingWindow (title, data) {
       // 拦截弹出设置窗口，返回当天数据
       if (me.opts.everyday) {
         me.opts.everyday(data);
         return;
       }
 
-      // 初始化input[value]
-      me.settingWindow.find('.cddsw-form-wrapper [type="text"]').val('');
-      me.settingWindow.find('[name="enableDateRange"]').prop('checked', false);
-      me.settingWindow.find('[name="setWeek"]').prop('checked', false);
-
       // 用户传入字段
       $.each(data, function (key, val) {
         me.settingWindow.find('[name="'+ key +'"]').val(val);
       });
-
       // 栏目标题
-      me.settingWindow.find('.cddsw-title').html(thisDate);
-      me.settingWindow.find('[name="startDay"], [name="endDay"]').val(thisDate);
-
-      // 当月日历
-      $daySelectWrapper = me.settingWindow.find('.bs-days-select .bs-options-wrapper');
-      var dayOptions = '';
-      var isToday = false;
-      for (var i = 0; i < currentMonthData.lastDay; i++) {
-        var val = currentMonthData.data[i];
-        isToday = +thisDate.split('-').pop() === +val.day;
-        dayOptions += '<i class="_checkbox' + (isToday ? ' _active' : '') + (val.disabled ? ' _disabled' : '') + '">' + formatNumber(val.day) + '</i>';
-      }
-      $daySelectWrapper.html(dayOptions)
-
+      me.settingWindow.find('.cddsw-title').html(title);
       me.settingWindow.show();
       verticalCenter(me.settingWindow.find('.cddsw-container'));
-      initSettingWindow();
-    });
-
-    function initSettingWindow () {
-      dateRangeOn = false;
-      weekRangeOn = false;
-      $daySelectWrapper.removeClass('disabled-options');
-      me.settingWindow.find('.bs-week-chekbox ._active').removeClass('_active');
+      me.settingWindow.find('.bs-options-wrapper ._active').removeClass('_active');
     }
 
     // ** 单日详情设置窗口内按钮点击事件 *******************************************
-    this.settingWindow.on('change', '[type="checkbox"]', function () {
-      var isChecked = $(this).is(':checked');
-      if (isChecked) {
-        dateRangeOn = true;
-        $daySelectWrapper.addClass('disabled-options');
-      } else {
-        dateRangeOn = false;
-        if (!weekRangeOn) $daySelectWrapper.removeClass('disabled-options');
-      }
-    });
+    // 切换批量tab
+    $tabWrapper.on('click', '.cdssw-tab-item', function () {
+      var $this = $(this);
+      if ($this.hasClass('_active')) return;
+      $this.addClass('_active');
+      $this.siblings('._active').removeClass('_active');
+      var target = $this.data('target');
+      handleTabContent(target);
+    })
 
-    // 星期被选中
-    this.settingWindow.on('click', '.bs-week-chekbox ._checkbox', function () {
+    function handleTabContent (target) {
+      var $el = $('.tab-' + target + '-content')
+      $el.show();
+      $el.siblings('.cddsw-batch-settings').hide();
+    }
+
+    // 星期、号数被选中
+    this.settingWindow.on('click', '._checkbox', function () {
       var $this = $(this);
       if ($this.hasClass('_active')) {
         $this.removeClass('_active');
-        var $checked = $this.siblings('._active');
-        if ($checked.length) {
-          weekRangeOn = true
-          $daySelectWrapper.addClass('disabled-options');
-        } else {
-          weekRangeOn = false
-          if (!dateRangeOn) $daySelectWrapper.removeClass('disabled-options');
-        }
       } else {
         $this.addClass('_active');
-        weekRangeOn = true;
-        $daySelectWrapper.addClass('disabled-options');
       }
     });
-
-    // 单日选择控制
-    this.settingWindow.on('click', '.bs-days-select ._checkbox', function () {
-      var $this = $(this);
-      // 范围或周日被选中时，不做处理
-      if (dateRangeOn || weekRangeOn || $this.hasClass('_disabled')) return;
-      if ($this.hasClass('_active')) {
-        $this.removeClass('_active')
-      } else {
-        $this.addClass('_active')
-      }
-    })
 
     // 关闭设置框
     this.settingWindow.on('click', '.cddsw-close, .btn-cancel', function () {
@@ -783,11 +771,19 @@
     });
 
     // 保存设置
-    this.settingWindow.on('click', '.btn-confirm', function () {
+    $swSubmitBtn.on('click', function () {
       var $dateSetWrapper = $(this).closest('.cddsw-container');
 
       // 当前显示的设置日期
       var thisDate = $dateSetWrapper.find('.cddsw-title').text();
+      // 是否为批量设置
+      var isBatch = /^\d+-\d+$/.test(thisDate)
+      // console.error(isBatch)
+      // 获取当前设置的类型
+      var batchType = isBatch ? $tabWrapper.find('._active').data('target') : null;
+      // 批量设置$对象
+      var $batch = isBatch ? $('.tab-' + batchType + '-content') : null;
+      // console.log(batchType)
 
       // 设置参数
       var setData = {};
@@ -800,75 +796,44 @@
 
       setData.date = thisDate;
 
-      // 批量设置$对象
-      var $batch = $('.cddsw-batch-settings');
-      // 日期范围
-      var startDay = $batch.find('[name="startDay"]').val();
-      var endDay = $batch.find('[name="endDay"]').val();
-      // 是否启用日期范围
-      var IS_ENABLE = $batch.find('[name="enableDateRange"]').is(':checked');
-
-      // 周设置
-      var weeks = [];
-      // 已选中的week checkbox
-      $batch.find('.bs-week-chekbox ._active').each(function () {
-        weeks.push($(this).data('value'));
-      });
-
       // 设置的日期范围数组
       var setDateRangeArr = [];
 
-      // 单日多选项
-      var daySelcetArr = []
-      $dateSetWrapper.find('.bs-days-select ._active').each(function () {
-        var d = currentMonthData.year + '-' + formatNumber(currentMonthData.month) + '-' + formatNumber($(this).text())
-        // console.log(d)
-        daySelcetArr.push(d)
-      })
-
-      // 有设置日期范围
-      if (IS_ENABLE) {
-        var HSDRD = me.handleSetDateRangeData(startDay, endDay);
-        if (!HSDRD) {
-          return;
-        }
-        setDateRangeArr = HSDRD;
-        // 周n未设置，直接处理日期范围数据
-        if (weeks.length === 0) {
-          // 处理数据，并退出
-          me.handleThisData(setData, setDateRangeArr);
-          return;
-        }
+      switch (batchType) {
+        case 'alls':
+          // 日期范围
+          var startDay = $batch.find('[name="startDay"]').val();
+          var endDay = $batch.find('[name="endDay"]').val();
+          var HSDRD = me.handleSetDateRangeData(startDay, endDay);
+          if (!HSDRD) return;
+          setDateRangeArr = HSDRD;
+          break;
+        case 'week':
+          // 周设置
+          var weeks = [];
+          // 已选中的week checkbox
+          $batch.find('.bs-week-chekbox ._active').each(function () {
+            weeks.push($(this).data('value'));
+          });
+          if (weeks.length === 0) return;
+          // 处理与周n设置的交集
+          setDateRangeArr = me.handleSetWeekData(weeks);
+          break;
+        case 'days':
+          var ym = currentMonthData.year + '-' + formatNumber(currentMonthData.month) + '-';
+          $batch.find('.bs-days-select ._active').each(function () {
+            var d = ym + formatNumber($(this).text());
+            // console.log(d)
+            setDateRangeArr.push(d);
+          })
+          if (setDateRangeArr.length === 0) return;
+          break;
+        default:
+          // 单日
+          setDateRangeArr.push(thisDate);
       }
-      // 没有设置日期范围
-      else {
-        // 周n未设置，直接处理当天数据
-        if (weeks.length === 0) {
-          // 处理数据，并退出
-          me.handleThisData(setData, daySelcetArr);
-          return;
-        }
-        // 获取范围数据，初始化的开始-结束日期
-        else {
-          setDateRangeArr = me.handleSetDateRangeData(
-            formatDate(me.startDate, 'yyyy-MM-dd'),
-            formatDate(me.endDate, 'yyyy-MM-dd')
-          );
-        }
-      }; // end if IS_ENABLE
-
-      // 处理与周n设置的交集
-      var intersectionDate = me.handleSetWeekData(weeks, setDateRangeArr);
-
-      if (intersectionDate.length > 0) {
-        me.handleThisData(setData, intersectionDate);
-      } else {
-        me.opts.error({
-          code: 3,
-          msg: CODES[3].replace('{{text}}', weeks.join(','))
-        });
-      }
-
+      console.log(setData, setDateRangeArr);
+      me.handleThisData(setData, setDateRangeArr);
     });
   };
 
@@ -938,14 +903,15 @@
    * @param week 设置的周n数组
    * @param setDateRangeArr 设置的日期范围或初始的日期范围
    */
-  fn.handleSetWeekData = function (week, setDateRangeArr) {
-    var me = this;
+  fn.handleSetWeekData = function (week) {
     var arr = [];
-    $.each(setDateRangeArr, function (key, val) {
-      var weekNum = me.dateToObject(val).getDay();
+    var weekStr = week.join(',');
+    var ym = currentMonthData.year + '-' + formatNumber(currentMonthData.month) + '-'
+    $.each(currentMonthData.data, function (key, val) {
+      if (val.disabled) return true;
       // week为数组，不用join方法indexOf无效？
-      if (week.join(',').indexOf(weekNum) > -1) {
-        arr.push(val);
+      if (weekStr.indexOf(val.week) > -1) {
+        arr.push(ym + formatNumber(val.day));
       }
     });
     return arr;
@@ -957,18 +923,10 @@
    * @param dateArr
    */
   fn.handleThisData = function (setData, dateArr) {
-    // log(dateArr)
-    var arr = dateArr || [];
-    var len = arr.length;
-
-    if (len === 0 ) {
-      this._updateThisData(setData);
-    } else {
-      for (var i = 0; i < len; i++) {
-        // 更新this.data
-        this._updateThisData(setData, arr[i]);
-      }
-    };
+    for (var i = 0; i < dateArr.length; i++) {
+      // 更新this.data
+      this._updateThisData(setData, dateArr[i]);
+    }
 
     // 处理新生成的数据
     this.data = this.sort(this.rmRepeat(this.data, 'date'));
@@ -991,15 +949,11 @@
 
     var data = {};
 
-    if (dateString) {
-      data.date = dateString;
-    } else {
-      data.date = setData.date;
-    }
+    data.date = dateString
 
     // 获取设置的参数及其值
     $.each(setData, function (key, val) {
-      if (key != 'date') {
+      if (key !== 'date') {
         data[key] = val;
       }
     });

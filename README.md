@@ -4,6 +4,8 @@
 
 > 浏览器兼容：ie8+
 
+大改前的版本，请点击[v1.1.3](https://github.com/zx1984/calendar-price-jquery/tree/1.1.3)
+
 #### 主要功能
 
 * 自定义日历显示参数
@@ -83,35 +85,43 @@ npm install calendar-pirce-jquery --save-dev
       config: [
         {
           key: 'buyNumMax',
-          name: '最多购买数'
+          name: '最多购买数',
+          value: 1000 // 批量设置时，读取的默认值
         },
         {
           key: 'buyNumMin',
-          name: '最少购买数'
+          name: '最少购买数',
+          value: 1000 // 批量设置时，读取的默认值
         },
         {
           key: 'price',
-          name: '分销售价'
+          name: '分销售价',
+          value: 1000
         },
         {
           key: 'priceMarket',
-          name: '景区挂牌价'
+          name: '景区挂牌价',
+          value: 1000
         },
         {
           key: 'priceSettlement',
-          name: '分销结算价'
+          name: '分销结算价',
+          value: 1000
         },
         {
           key: 'priceRetail',
-          name: '建议零售价'
+          name: '建议零售价',
+          value: 1000
         },
         {
           key: 'cashback',
-          name: '返现'
+          name: '返现',
+          value: 1000
         },
         {
           key: 'stock',
-          name: '当天库存'
+          name: '当天库存',
+          value: 1000
         }
       ],
       // 配置在日历中要显示的字段
@@ -181,11 +191,11 @@ npm install calendar-pirce-jquery --save-dev
 
 PC端
 
-![calendar-price-jquery](demo/preview-pc.png)
+![calendar-price-jquery](demo/v1.2-1.png)
 
 移动端
 
-![calendar-price-jquery](demo/preview-mobile.png)
+![calendar-price-jquery](demo/v1.2-2.png)
 
 ## Options 参数
 
