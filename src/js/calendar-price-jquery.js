@@ -665,6 +665,14 @@
       me.opts.cancel();
     });
 
+    // 批量设置
+    // this.calendar.on('click', '.btn-batch', function () {
+    //
+    //   me.settingWindow.show();
+    //   verticalCenter(me.settingWindow.find('.cddsw-container'));
+    //   initSettingWindow();
+    // })
+
     // 获取点击日期数据
     // 渲染设置框内容
     // 显示设置窗口
