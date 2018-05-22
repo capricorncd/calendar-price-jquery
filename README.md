@@ -169,7 +169,7 @@ npm install calendar-pirce-jquery --save-dev
     // 监听设置表单提交
     // 将阻止默认流程执行
     // 继续执行默认流程，请执行参数next()
-    zxCalendar.$on('submit', function (data, next) {
+    zxCalendar.$on('submit-form', function (data, next) {
       // data 设置的数据
       console.error(data)
 
