@@ -4,7 +4,7 @@
 
 > 浏览器兼容：ie8+
 
-大改前的版本，请点击[v1.1.3](https://github.com/zx1984/calendar-price-jquery/tree/1.1.3)
+-- 大改前的版本，请点击 [v1.1.3](https://github.com/zx1984/calendar-price-jquery/tree/1.1.3)
 
 #### 主要功能
 
@@ -67,6 +67,48 @@ npm install calendar-pirce-jquery --save-dev
     }
   ];
 
+  // 参数配置
+  // 日历设置表单字段配置
+  // key 字段名
+  // name 表单label
+  // value 默认值
+  // placeholder input[placeholder]
+  var calendarConfig = [
+    {
+      key: 'buyNumMax',
+      name: '最多购买数',
+      value: 1000,
+      type: 'number',
+      placeholder: '请输入最多购买数量'
+    },
+    {
+      key: 'price',
+      name: '分销售价',
+      value: 100,
+      type: 'text',
+      placeholder: '00.00'
+    },
+    {
+      key: 'stock',
+      name: '当天库存',
+      value: 1000,
+      type: 'number',
+      placeholder: ''
+    }
+  ]
+
+  // 日历中显示配置
+  var showConfig = [
+    {
+      key: 'price',
+      name: '分:￥'
+    },
+    {
+      key: 'stock',
+      name: '库:'
+    }
+  ]
+
   // 使用插件
   $(function () {
 
@@ -82,63 +124,9 @@ npm install calendar-pirce-jquery --save-dev
       // 初始数据
       data: mockData,
       // 配置需要设置的字段名称，请与你传入的数据对象对应
-      config: [
-        {
-          key: 'buyNumMax',
-          name: '最多购买数',
-          value: 1000 // 批量设置时，读取的默认值
-        },
-        {
-          key: 'buyNumMin',
-          name: '最少购买数',
-          value: 1000 // 批量设置时，读取的默认值
-        },
-        {
-          key: 'price',
-          name: '分销售价',
-          value: 1000
-        },
-        {
-          key: 'priceMarket',
-          name: '景区挂牌价',
-          value: 1000
-        },
-        {
-          key: 'priceSettlement',
-          name: '分销结算价',
-          value: 1000
-        },
-        {
-          key: 'priceRetail',
-          name: '建议零售价',
-          value: 1000
-        },
-        {
-          key: 'cashback',
-          name: '返现',
-          value: 1000
-        },
-        {
-          key: 'stock',
-          name: '当天库存',
-          value: 1000
-        }
-      ],
+      config: calendarConfig,
       // 配置在日历中要显示的字段
-      show: [
-        {
-          key: 'price',
-          name: '分:￥'
-        },
-        {
-          key: 'priceSettlement',
-          name: '采:￥'
-        },
-        {
-          key: 'stock',
-          name: '库:'
-        }
-      ],
+      show: showConfig,
       // 点击'确定'按钮，返回设置完成的所有数据
       callback: function (data) {
         console.log('callback ....');
@@ -178,6 +166,21 @@ npm install calendar-pirce-jquery --save-dev
       }
     });
 
+    // 监听设置表单提交
+    // 将阻止默认流程执行
+    // 继续执行默认流程，请执行参数next()
+    zxCalendar.$on('submit', function (data, next) {
+      // data 设置的数据
+      console.error(data)
+
+      // 此处可以验证表单
+      // 验证表单逻辑....
+      // ....
+
+      // 继续执行下一步
+      next()
+    })
+
   });
 
 </script>
@@ -208,6 +211,33 @@ PC端
 * data: `mockData` (可选)，初始时日历上显示的数据，详见使用方法。
 
 * config: `array` (必须)，与data中的数据参数(属性)对应，该配置里的配置项，即可设置的参数字段，`key` 为需要设置的字段，`name`为输入框前面显示的名称。
+
+```
+// 配置
+var config = [
+  {
+    key: 'buyNumMax',
+    name: '最多购买数',
+    value: 1000,
+    type: 'number',
+    placeholder: '请输入最多购买数量'
+  }
+]
+
+// 生成后的html代码
+<label>
+  最多购买数
+  <input name="buyNumMax" value="1000" type="number" placeholder="请输入最多购买数量">
+</label>
+```
+
+  |字段|说明|
+  |:--|:--|
+  |key| `input[name]` input名称name属性值|
+  |name| `<label>Label</label>` 输入框前缀/名称 |
+  |value| `input[value]` 批量设置input默认值|
+  |type| `input[type]` input类型 |
+  |placeholder| `input[placeholder]` input占位字符 |
 
 * show: `array` (可选)， 日历中需要显示的参数(属性)，与data中的数据参数(属性)对应。`key` 为需要设置的字段名，`name`为显示在日历中的名称(简称)。
 
@@ -272,6 +302,39 @@ PC端
 ```
 
 ## Method 方法
+
+* $on('事件名称', callback)
+
+// 拦截设置表单提交
+
+```
+var zxCalendar = $.CalendarPrice({'参数...'});
+// 监听设置表单提交
+// 将阻止默认流程执行
+// 继续执行默认流程，请执行参数next()
+zxCalendar.$on('submit-form', function (data, next) {
+  // data 设置的数据
+
+  // 此处可以验证表单
+  // 验证表单逻辑....
+  // ....
+
+  // 继续执行下一步
+  next()
+})
+```
+
+参数说明
+
+|事件名称| 回调函数参数 | 说明|
+|:--|:--|:--|
+|`submit-form`| data, next  | 设置表单提交监听; `data`表单设置数据;|
+
+> `next()`:
+
+> 继续执行默认流程 (比如：按设置日期处理数据，并关闭设置窗口)
+
+> 不调用`next()`将阻止默认流程执行
 
 * update(newArrayData) 更新日历数据；参数为新的数据。
 

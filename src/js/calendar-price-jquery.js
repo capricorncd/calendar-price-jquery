@@ -69,6 +69,30 @@
     return version && +version <= 9;
   }
 
+  var BC = (function() {
+    var attachFunctionList = {};
+    //事件通知
+    var notify = function (notifyName) {
+      var args = Array.prototype.slice.call(arguments, 1);
+      attachFunctionList[notifyName].fun.apply(attachFunctionList[notifyName].scope, args);
+      return this;
+    }
+    //事件监听
+    var attach = function (notifyName, callback) {
+      if(typeof notifyName === 'string' && typeof callback === 'function') {
+        attachFunctionList[notifyName] = {
+          fun:callback
+        }
+      }
+      return this;
+    }
+    return {
+      ev: attachFunctionList,
+      $on: attach,
+      $emit: notify
+    }
+  })();
+
   // 创建settingWindow dom
   function createSettingWindow () {
     var div = document.createElement('div');
@@ -146,6 +170,8 @@
     }
   };
 
+  function nextFn () {}
+
   /**
    * 日历价格设置jQ插件
    * @param opts
@@ -163,6 +189,9 @@
 
     // 日历容器
     this.calendar = $(opts.el);
+    this.ev = BC.ev
+    this.$on = BC.$on
+    this.$emit = BC.$emit
 
     // 初始化
     this.init();
@@ -171,6 +200,7 @@
   // prototype
   var fn = CalendarPrice.prototype;
 
+  fn.on = nextFn
   /**
    * 格式化月份
    * @param month
@@ -310,7 +340,7 @@
     var reg = /(\d{4})[-\/\.](\d{1,2})[-\/\.]?/;
     if (reg.test(date)) {
       newDate += RegExp.$1 + '/' + RegExp.$2;
-    };
+    }
 
     // 是否有day日
     if (/[-\/\.]\d{1,2}[-\/\.](\d{1,2})/.test(date)) {
@@ -589,6 +619,10 @@
     // $('body').append('<div class="capricorncd-date-detailed-settings">' + html + '</div>');
   };
 
+  function _parse (val) {
+    return val === null || typeof val === 'undefined' ? '' : val
+  }
+
   /**
    * 创建单日设置input组
    * @returns {string}
@@ -599,10 +633,12 @@
     var config = this.opts.config;
     for (var i = 0; i < config.length; i++) {
       var val = config[i];
-      html += '<li>';
-      html += '   <label>'+ val.name +'</label>';
-      html += '   <input name="'+ val.key +'" type="text">';
-      html += '</li>';
+      if (val.key) {
+        html += '<li>';
+        html += '   <label>'+ val.name +'</label>';
+        html += '   <input name="'+ val.key +'" type="' + (val.type || 'text') + '" placeholder="' + _parse(val.placeholder) + '">';
+        html += '</li>';
+      }
     }
     return html;
   };
@@ -696,7 +732,7 @@
       $.each(me.opts.config, function (key, val) {
         data[val.key] = val.value;
       })
-      _initSettingWindow(ym, data);
+      _initSettingWindow('批量设置', data);
     })
 
     // 获取点击日期数据
@@ -777,7 +813,7 @@
       // 当前显示的设置日期
       var thisDate = $dateSetWrapper.find('.cddsw-title').text();
       // 是否为批量设置
-      var isBatch = /^\d+-\d+$/.test(thisDate)
+      var isBatch = !/^\d+-\d+-\d+$/.test(thisDate)
       // console.error(isBatch)
       // 获取当前设置的类型
       var batchType = isBatch ? $tabWrapper.find('._active').data('target') : null;
@@ -794,8 +830,17 @@
         // console.log(key + ' => ' + val);
       });
 
-      setData.date = thisDate;
+      // setData.date = thisDate;
+      if (me.ev.hasOwnProperty('submit-form')) {
+        me.$emit('submit-form', setData, function () {
+          _handeSetData($batch, batchType, setData, thisDate)
+        })
+      } else {
+        _handeSetData($batch, batchType, setData, thisDate)
+      }
+    });
 
+    function _handeSetData ($batch, batchType, setData, thisDate) {
       // 设置的日期范围数组
       var setDateRangeArr = [];
 
@@ -832,9 +877,9 @@
           // 单日
           setDateRangeArr.push(thisDate);
       }
-      console.log(setData, setDateRangeArr);
+      // console.log(setData, setDateRangeArr);
       me.handleThisData(setData, setDateRangeArr);
-    });
+    }
   };
 
 

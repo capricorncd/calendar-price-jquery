@@ -20,137 +20,169 @@
 <script>
   $(function () {
     // 生成模拟数据
-    var MOCK_DATA = createMockData()
+    var MOCK_DATA = createMockData();
 
+    // 日历设置表单字段配置
+    // key 字段名
+    // name 表单label
+    // value 默认值
+    // placeholder input[placeholder]
+    var calendarConfig = [
+      {
+        key: 'buyNumMax',
+        name: '最多购买数',
+        value: 1000,
+        type: 'number',
+        placeholder: '请输入最多购买数量'
+      },
+      {
+        key: 'buyNumMin',
+        name: '最少购买数',
+        value: 0,
+        type: 'number',
+        placeholder: '请输入最少购买数'
+      },
+      {
+        key: 'price',
+        name: '分销售价',
+        value: 100,
+        type: 'text',
+        placeholder: ''
+      },
+      {
+        key: 'priceMarket',
+        name: '景区挂牌价',
+        value: 100,
+        type: 'text',
+        placeholder: ''
+      },
+      {
+        key: 'priceSettlement',
+        name: '分销结算价',
+        value: 100,
+        type: 'text',
+        placeholder: ''
+      },
+      {
+        key: 'priceRetail',
+        name: '建议零售价',
+        value: 100,
+        placeholder: ''
+      },
+      {
+        key: 'cashback',
+        name: '返现',
+        value: 1,
+        placeholder: ''
+      },
+      {
+        key: 'stock',
+        name: '当天库存',
+        value: 1000,
+        type: 'number',
+        placeholder: ''
+      }
+    ]
+
+    // 日历中显示配置
+    var showConfig = [
+      {
+        key: 'price',
+        name: '分:￥'
+      },
+      {
+        key: 'priceSettlement',
+        name: '采:￥'
+      },
+      {
+        key: 'stock',
+        name: '库:'
+      }
+    ]
+
+    // 样式颜色配置
+    var styleConfig = {
+      // 头部背景色
+      headerBgColor: '#098cc2',
+      // 头部文字颜色
+      headerTextColor: '#fff',
+      // 周一至周日背景色，及文字颜色
+      weekBgColor: '#098cc2',
+      weekTextColor: '#fff',
+      // 周末背景色，及文字颜色
+      weekendBgColor: '#098cc2',
+      weekendTextColor: '#fff',
+      // 有效日期颜色
+      validDateTextColor: '#333',
+      validDateBgColor: '#fff',
+      validDateBorderColor: '#eee',
+      // Hover
+      validDateHoverBgColor: '#098cc2',
+      validDateHoverTextColor: '#fff',
+      // 无效日期颜色
+      invalidDateTextColor: '#ccc',
+      invalidDateBgColor: '#fff',
+      invalidDateBorderColor: '#eee',
+      // 底部背景颜色
+      footerBgColor: '#fff',
+      // 重置按钮颜色
+      resetBtnBgColor: '#77c351',
+      resetBtnTextColor: '#fff',
+      resetBtnHoverBgColor: '#55b526',
+      resetBtnHoverTextColor: '#fff',
+      // 确定按钮
+      confirmBtnBgColor: '#098cc2',
+      confirmBtnTextColor: '#fff',
+      confirmBtnHoverBgColor: '#00649a',
+      confirmBtnHoverTextColor: '#fff',
+      // 取消按钮
+      cancelBtnBgColor: '#fff',
+      cancelBtnBorderColor: '#bbb',
+      cancelBtnTextColor: '#999',
+      cancelBtnHoverBgColor: '#fff',
+      cancelBtnHoverBorderColor: '#bbb',
+      cancelBtnHoverTextColor: '#666'
+    }
+
+    // 初始化日历
     var zxCalendar = $.CalendarPrice({
       el: '.container',
       // startDate: '2017-08-02',
       endDate: '2018-12-20',
       data: MOCK_DATA,
       // 配置需要设置的字段名称
-      config: [
-        {
-          key: 'buyNumMax',
-          name: '最多购买数',
-          value: 1000
-        },
-        {
-          key: 'buyNumMin',
-          name: '最少购买数',
-          value: 0
-        },
-        {
-          key: 'price',
-          name: '分销售价',
-          value: 100
-        },
-        {
-          key: 'priceMarket',
-          name: '景区挂牌价',
-          value: 100
-        },
-        {
-          key: 'priceSettlement',
-          name: '分销结算价',
-          value: 100
-        },
-        {
-          key: 'priceRetail',
-          name: '建议零售价',
-          value: 100
-        },
-        {
-          key: 'cashback',
-          name: '返现',
-          value: 1
-        },
-        {
-          key: 'stock',
-          name: '当天库存',
-          value: 1000
-        }
-      ],
+      config: calendarConfig,
       // 配置在日历中要显示的字段
-      show: [
-        {
-          key: 'price',
-          name: '分:￥'
-        },
-        {
-          key: 'priceSettlement',
-          name: '采:￥'
-        },
-        {
-          key: 'stock',
-          name: '库:'
-        }
-      ],
+      show: showConfig,
+      // 点击确定时的回调函数，返回当前设置数据
       callback: function (data) {
         log('callback ....');
         log(data);
       },
+      // 点击取消按钮回调
       cancel: function () {
         log('取消设置 ....');
         // 取消设置
         // 这里可以触发关闭设置窗口
         // ...
       },
+      // 重置按钮
+      reset: function () {
+        log('数据重置成功！');
+      },
+      // 月份改变时的回调
       monthChange: function (month) {
         log('monthChange: ')
         log(month)
-//        var newData = createMockData()
-//        zxCalendar.update(newData)
-      },
-      reset: function () {
-        log('数据重置成功！');
+        // var newData = createMockData()
+        // zxCalendar.update(newData)
       },
       error: function (err) {
         console.error(err.msg);
         alert(err.msg);
       },
       // 自定义颜色
-      style: {
-        // 头部背景色
-        headerBgColor: '#098cc2',
-        // 头部文字颜色
-        headerTextColor: '#fff',
-        // 周一至周日背景色，及文字颜色
-        weekBgColor: '#098cc2',
-        weekTextColor: '#fff',
-        // 周末背景色，及文字颜色
-        weekendBgColor: '#098cc2',
-        weekendTextColor: '#fff',
-        // 有效日期颜色
-        validDateTextColor: '#333',
-        validDateBgColor: '#fff',
-        validDateBorderColor: '#eee',
-        // Hover
-        validDateHoverBgColor: '#098cc2',
-        validDateHoverTextColor: '#fff',
-        // 无效日期颜色
-        invalidDateTextColor: '#ccc',
-        invalidDateBgColor: '#fff',
-        invalidDateBorderColor: '#eee',
-        // 底部背景颜色
-        footerBgColor: '#fff',
-        // 重置按钮颜色
-        resetBtnBgColor: '#77c351',
-        resetBtnTextColor: '#fff',
-        resetBtnHoverBgColor: '#55b526',
-        resetBtnHoverTextColor: '#fff',
-        // 确定按钮
-        confirmBtnBgColor: '#098cc2',
-        confirmBtnTextColor: '#fff',
-        confirmBtnHoverBgColor: '#00649a',
-        confirmBtnHoverTextColor: '#fff',
-        // 取消按钮
-        cancelBtnBgColor: '#fff',
-        cancelBtnBorderColor: '#bbb',
-        cancelBtnTextColor: '#999',
-        cancelBtnHoverBgColor: '#fff',
-        cancelBtnHoverBorderColor: '#bbb',
-        cancelBtnHoverTextColor: '#666'
-      }
+      style: styleConfig
       // 点击有效的某一触发的回调函数
       // 注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置
       // 返回每天的数据
@@ -162,6 +194,22 @@
 //        hideFooterButton: true
     });
     log(zxCalendar)
+
+    // 监听设置表单提交
+    // 将阻止默认流程执行
+    // 继续执行默认流程，请执行参数next()
+    zxCalendar.$on('submit-form', function (data, next) {
+      // data 设置的数据
+      console.log('表单数据 ================')
+      console.log(data)
+
+      // 此处可以验证表单
+      // 验证表单逻辑....
+      // ....
+
+      // 继续执行下一步
+      next()
+    })
   });
 
   function log (s) {
