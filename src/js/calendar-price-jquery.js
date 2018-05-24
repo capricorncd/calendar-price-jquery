@@ -358,7 +358,7 @@
       return new Date(newDate);
     } else {
       var msg = CODES[2].replace('{{text}}', date);
-      this.$emit('error', _err(2, msg));
+      if (this.ev['error']) this.$emit('error', _err(2, msg));
       this.opts.error(_err(2, msg));
       return false;
     }
@@ -677,7 +677,7 @@
     // 上一月
     this.calendar.on('click', '.prev-month', function () {
       var monthData = me.getMonthData();
-      me.$emit('month-change', monthData)
+      if (me.ev['month-change']) me.$emit('month-change', monthData)
       me.opts.monthChange(monthData)
       me._prevMonth();
       // me.opts.monthChange(formatDate(me.month, 'yyyy-MM'))
@@ -686,7 +686,7 @@
     // 下一月
     this.calendar.on('click', '.next-month', function () {
       var monthData = me.getMonthData();
-      me.$emit('month-change', monthData);
+      if (me.ev['month-change']) me.$emit('month-change', monthData);
       me.opts.monthChange(monthData);
       me._nextMonth();
       // me.opts.monthChange(formatDate(me.month, 'yyyy-MM'))
@@ -935,19 +935,19 @@
     var ed = isValid(endDay);
 
     if (!sd) {
-      this.$emit('error', _err(4))
+      if (this.ev['error']) this.$emit('error', _err(4))
       this.opts.error(_err(4));
       return null;
     }
 
     if (!ed) {
-      this.$emit('error', _err(6))
+      if (this.ev['error']) this.$emit('error', _err(6))
       this.opts.error(_err(6));
       return null;
     }
 
     if (sd > ed) {
-      this.$emit('error', _err(7))
+      if (this.ev['error']) this.$emit('error', _err(7))
       this.opts.error(_err(7));
       return null;
     }
@@ -1217,7 +1217,7 @@
   fn.sort = function (arr) {
 
     if (!(arr instanceof Array)) {
-      this.$emit('error', _err(8))
+      if (this.ev['error']) this.$emit('error', _err(8))
       this.opts.error(_err(8));
       return arr;
     }
@@ -1295,7 +1295,7 @@
   // 更新数据
   fn.update = function (newArr) {
     if (!newArr || !(newArr instanceof Array)) {
-      this.$emit('error', _err(9))
+      if (this.ev['error']) this.$emit('error', _err(9))
       this.opts.error(_err(9));
       return
     }
