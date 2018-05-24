@@ -111,13 +111,13 @@
     if (isLeIE9()) {
       var h = $el.height();
       var wh = $(window).height();
-      console.log(h, wh)
+      // console.log(h, wh)
       $el.css('top', (wh - h) / 2 + 'px');
     }
   }
 
   var CODES = {
-    1: '请配置日历显示的容器!',
+    1: '参数错误(el: "selector"): 未配置日历显示的容器选择器!',
     2: '{{text}}: 日期格式不合法!',
     3: '设置的日期范围或初始化的日期范围，与设置的周{{text}}没有交集',
     4: '开始日期格式错误',
@@ -175,31 +175,26 @@
   // 当前点击的日期0000-00-00
   var currentDay = null;
 
+  function _err (num, msg) {
+    return {
+      code: num,
+      msg: msg || CODES[num]
+    }
+  }
+
   /**
    * 日历价格设置jQ插件
    * @param opts
    * @constructor
    */
-  function CalendarPrice(opts) {
+  function CalendarPrice (opts) {
     this.opts = $.extend({}, DEFAULTS, opts);
-    // 日历显示容器
-    if (!opts.el) {
-      opts.error({
-        code: 1,
-        msg: CODES[1]
-      })
-    }
-
-    // 日历容器
-    this.calendar = $(opts.el);
-
-    this.ev = BC.ev
-    this.$on = BC.$on
-    this.$emit = BC.$emit
-
+    this.ev = BC.ev;
+    this.$on = BC.$on;
+    this.$emit = BC.$emit;
     // 初始化
     this.init();
-  };
+  }
 
   // prototype
   var fn = CalendarPrice.prototype;
@@ -232,6 +227,12 @@
    * 初始化日历
    */
   fn.init = function () {
+    // 日历显示容器
+    if (!this.opts.el) {
+      throw new Error(CODES[1]);
+    }
+    // 日历容器
+    this.calendar = $(this.opts.el);
     // 日历单日设置窗口
     this.settingWindow = createSettingWindow();
 
@@ -328,7 +329,7 @@
     // 取当月最后一天
     else {
       d = new Date(Date.parse(new Date(y, m)) - ONE_DAY_MSEC).getDate();
-    };
+    }
 
     return this.dateToObject(y + '/' + m + '/' + d);
   };
@@ -356,10 +357,9 @@
       // newDate 为字符串
       return new Date(newDate);
     } else {
-      this.opts.error({
-        code: 2,
-        msg: CODES[2].replace('{{text}}', date)
-      })
+      var msg = CODES[2].replace('{{text}}', date);
+      this.$emit('error', _err(2, msg));
+      this.opts.error(_err(2, msg));
       return false;
     }
 
@@ -512,7 +512,7 @@
     // 可操作的日期td
     this.calendar.find('.valid-hook').each(function () {
       dayData = me._getDateData($(this).data('id'));
-      html = me.dayComplate().toString();
+      html = me.dayTemplate().toString();
       if (dayData) {
         // console.log(dayData)
         for (var key in dayData) {
@@ -550,7 +550,7 @@
     // 第几月
     var y = formatDate(month, 'yyyy');
     var m = formatDate(month, 'MM');
-    if (m == 12) {
+    if (+m === 12) {
       return 31;
     } else {
       // month的下个月第一天，减去一天则为该月的最后一天
@@ -636,7 +636,7 @@
       var val = config[i];
       html += '<li>';
       html += '   <label>'+ val.name +'</label>';
-      html += '   <input name="'+ val.key +'" type="text">';
+      html += '   <input name="'+ val.key +'" placeholder="' + val.placeholder + '" type="' + (val.type || 'text') + '">';
       html += '</li>';
     }
     return html;
@@ -647,7 +647,7 @@
    * @returns {string}
    * @private
    */
-  fn.dayComplate = function () {
+  fn.dayTemplate = function () {
     var arr = this.opts.show;
     var html = '';
     if (arr && arr instanceof Array) {
@@ -657,7 +657,7 @@
       }
     }
     return html;
-  };
+  }
 
   /**
    * 按钮点击事件处理
@@ -676,14 +676,18 @@
 
     // 上一月
     this.calendar.on('click', '.prev-month', function () {
-      me.opts.monthChange(me.getMonthData())
+      var monthData = me.getMonthData();
+      me.$emit('month-change', monthData)
+      me.opts.monthChange(monthData)
       me._prevMonth();
       // me.opts.monthChange(formatDate(me.month, 'yyyy-MM'))
     });
 
     // 下一月
     this.calendar.on('click', '.next-month', function () {
-      me.opts.monthChange(me.getMonthData())
+      var monthData = me.getMonthData();
+      me.$emit('month-change', monthData);
+      me.opts.monthChange(monthData);
       me._nextMonth();
       // me.opts.monthChange(formatDate(me.month, 'yyyy-MM'))
     });
@@ -931,26 +935,20 @@
     var ed = isValid(endDay);
 
     if (!sd) {
-      this.opts.error({
-        code: 4,
-        msg: CODES[4]
-      });
+      this.$emit('error', _err(4))
+      this.opts.error(_err(4));
       return null;
     }
 
     if (!ed) {
-      this.opts.error({
-        code: 6,
-        msg: CODES[6]
-      });
+      this.$emit('error', _err(6))
+      this.opts.error(_err(6));
       return null;
     }
 
     if (sd > ed) {
-      this.opts.error({
-        code: 7,
-        msg: CODES[7]
-      });
+      this.$emit('error', _err(7))
+      this.opts.error(_err(7));
       return null;
     }
 
@@ -968,7 +966,7 @@
     var arr = [];
     var sMsec = this.startDate.getTime();
     var eMsec = this.endDate.getTime();
-    console.log(sMsec, eMsec)
+    // console.log(sMsec, eMsec)
     var days = (eMsec - sMsec) / ONE_DAY_MSEC + 1;
     var date;
     for (var i = 0; i < days; i++) {
@@ -1219,10 +1217,8 @@
   fn.sort = function (arr) {
 
     if (!(arr instanceof Array)) {
-      this.opts.error({
-        code: 8,
-        msg: CODES[8]
-      });
+      this.$emit('error', _err(8))
+      this.opts.error(_err(8));
       return arr;
     }
 
@@ -1299,10 +1295,8 @@
   // 更新数据
   fn.update = function (newArr) {
     if (!newArr || !(newArr instanceof Array)) {
-      this.opts.error({
-        code: 9,
-        msg: CODES[9]
-      })
+      this.$emit('error', _err(9))
+      this.opts.error(_err(9));
       return
     }
     var i, val, data, index

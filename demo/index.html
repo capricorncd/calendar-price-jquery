@@ -31,56 +31,48 @@
       {
         key: 'buyNumMax',
         name: '最多购买数',
-        value: 1000,
         type: 'number',
         placeholder: '请输入最多购买数量'
       },
       {
         key: 'buyNumMin',
         name: '最少购买数',
-        value: 0,
         type: 'number',
         placeholder: '请输入最少购买数'
       },
       {
         key: 'price',
         name: '分销售价',
-        value: 100,
         type: 'text',
-        placeholder: ''
+        placeholder: '请输入'
       },
       {
         key: 'priceMarket',
         name: '景区挂牌价',
-        value: 100,
         type: 'text',
-        placeholder: ''
+        placeholder: '请输入'
       },
       {
         key: 'priceSettlement',
         name: '分销结算价',
-        value: 100,
         type: 'text',
-        placeholder: ''
+        placeholder: '请输入'
       },
       {
         key: 'priceRetail',
         name: '建议零售价',
-        value: 100,
-        placeholder: ''
+        placeholder: '请输入建议零售价'
       },
       {
         key: 'cashback',
         name: '返现',
-        value: 1,
-        placeholder: ''
+        placeholder: '返现'
       },
       {
         key: 'stock',
         name: '当天库存',
-        value: 1000,
         type: 'number',
-        placeholder: ''
+        placeholder: '-1代表不限'
       }
     ]
 
@@ -148,7 +140,7 @@
     var zxCalendar = $.CalendarPrice({
       el: '.container',
       // startDate: '2017-08-02',
-      endDate: '2018-12-20',
+      endDate: '2019-02-20',
       data: MOCK_DATA,
       // 配置需要设置的字段名称
       config: calendarConfig,
@@ -176,10 +168,6 @@
         log(month)
         // var newData = createMockData()
         // zxCalendar.update(newData)
-      },
-      error: function (err) {
-        console.error(err.msg);
-        alert(err.msg);
       },
       // 自定义颜色
       style: styleConfig
@@ -209,6 +197,14 @@
 
       // 继续执行下一步
       next()
+    })
+
+    // 执行过程中错误回调
+    zxCalendar.$on('error', function (err) {
+      // 执行中的错误提示
+      console.error('Error:')
+      console.log(err)
+      alert(err.msg);
     })
   });
 

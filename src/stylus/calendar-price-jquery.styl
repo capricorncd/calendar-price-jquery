@@ -129,14 +129,16 @@ $colorSuccessHover = rgb(85, 181, 38);
           color: #ccc;
         b
           display: block;
+          padding: 0 5px;
           text-align: right;
           line-height: 1.5;
         div
-        	font-size: 12px;
-        	color: rgb(9, 140, 194);
-        	p
-        	  margin: 4px 0;
-        	  padding: 0;
+          box-sizing: border-box;
+          color: rgb(9, 140, 194);
+          font-size: 12px;
+          p
+            margin: 4px 0;
+        	  padding: 0 5px;
         &.valid-hook:hover
           background-color: rgb(9, 140, 194);
           b, p
@@ -289,7 +291,7 @@ $colorSuccessHover = rgb(85, 181, 38);
             margin-left: 10px;
           .itext
             padding: 0 4px;
-            width: 179px;
+            width: 40%;
             height: 30px;
             line-height: 30px;
             border: 1px solid $lineColor;
@@ -339,8 +341,6 @@ $colorSuccessHover = rgb(85, 181, 38);
           .bs-options-wrapper
             margin-left: 20px;
             height: auto;
-            .itext
-              width: 80px;
           .bs-options-wrapper
             label
               flex: 0 0 25%;

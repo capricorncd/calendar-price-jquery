@@ -67,6 +67,71 @@ npm install calendar-pirce-jquery --save-dev
 
   // 使用插件
   $(function () {
+      // 日历设置参数配置
+      var calendarConfig = [
+        {
+          key: 'buyNumMax',
+          name: '最多购买数',
+          type: 'number',
+          placeholder: '请输入最多购买数量'
+        },
+        {
+          key: 'buyNumMin',
+          name: '最少购买数',
+          type: 'number',
+          placeholder: '请输入最少购买数'
+        },
+        {
+          key: 'price',
+          name: '分销售价',
+          type: 'text',
+          placeholder: '请输入'
+        },
+        {
+          key: 'priceMarket',
+          name: '景区挂牌价',
+          type: 'text',
+          placeholder: '请输入'
+        },
+        {
+          key: 'priceSettlement',
+          name: '分销结算价',
+          type: 'text',
+          placeholder: '请输入'
+        },
+        {
+          key: 'priceRetail',
+          name: '建议零售价',
+          placeholder: '请输入建议零售价'
+        },
+        {
+          key: 'cashback',
+          name: '返现',
+          placeholder: '返现'
+        },
+        {
+          key: 'stock',
+          name: '当天库存',
+          type: 'number',
+          placeholder: '-1代表不限'
+        }
+      ]
+
+      // 日历中显示配置
+      var showConfig = [
+        {
+          key: 'price',
+          name: '分:￥'
+        },
+        {
+          key: 'priceSettlement',
+          name: '采:￥'
+        },
+        {
+          key: 'stock',
+          name: '库:'
+        }
+      ]
 
     var zxCalendar = $.CalendarPrice({
       // 显示日历的容器
@@ -80,55 +145,9 @@ npm install calendar-pirce-jquery --save-dev
       // 初始数据
       data: mockData,
       // 配置需要设置的字段名称，请与你传入的数据对象对应
-      config: [
-        {
-          key: 'buyNumMax',
-          name: '最多购买数'
-        },
-        {
-          key: 'buyNumMin',
-          name: '最少购买数'
-        },
-        {
-          key: 'price',
-          name: '分销售价'
-        },
-        {
-          key: 'priceMarket',
-          name: '景区挂牌价'
-        },
-        {
-          key: 'priceSettlement',
-          name: '分销结算价'
-        },
-        {
-          key: 'priceRetail',
-          name: '建议零售价'
-        },
-        {
-          key: 'cashback',
-          name: '返现'
-        },
-        {
-          key: 'stock',
-          name: '当天库存'
-        }
-      ],
+      config: calendarConfig,
       // 配置在日历中要显示的字段
-      show: [
-        {
-          key: 'price',
-          name: '分:￥'
-        },
-        {
-          key: 'priceSettlement',
-          name: '采:￥'
-        },
-        {
-          key: 'stock',
-          name: '库:'
-        }
-      ],
+      show: showConfig,
       // 点击'确定'按钮，返回设置完成的所有数据
       callback: function (data) {
         console.log('callback ....');
@@ -174,6 +193,26 @@ npm install calendar-pirce-jquery --save-dev
 
 </body>
 </html>
+```
+
+事件监听
+
+```
+// 监听设置表单提交
+// 将阻止默认流程执行
+// 继续执行默认流程，请执行参数next()
+zxCalendar.$on('submit-form', function (data, next) {
+  // data 设置的数据
+  console.log('表单数据 ================')
+  console.log(data)
+
+  // 此处可以验证表单
+  // 验证表单逻辑....
+  // ....
+
+  // 继续执行下一步
+  next()
+})
 ```
 
 
@@ -262,6 +301,14 @@ PC端
 ```
 
 ## Method 方法
+
+* $on('event-name', callback)
+
+|事件名|回调参数|说明|
+|:--|:--|:--|
+|submit-form|data|设置窗口点击确定时回调，返回设置的数据data|
+|month-change|data|切换月份前触发，返回该月设置数据|
+|error|errData|执行过程中的错误回调|
 
 * update(newArrayData) 更新日历数据；参数为新的数据。
 
