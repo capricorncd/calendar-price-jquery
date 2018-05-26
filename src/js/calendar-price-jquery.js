@@ -751,7 +751,7 @@
       }
 
       if (me.ev['valid-day']) {
-        me.$emit('valid-day', data, currentDay, function () {
+        me.$emit('valid-day', currentDay, data, function () {
           handleClickValidDay(data, currentDay);
         });
       } else {

@@ -320,11 +320,11 @@ PC端
 ||data `Object`|返回当前被修改对象的`{name: 'objectName', value: '被修改后的值'}, $el: '当前被修改元素jQuery对象'`|
 |submit-form|(data, next)|设置窗口点击确定时回调，返回设置的数据data|
 | |data `Object`|当前设置窗口中设置的数据|
-| |next() `Function`|继续执行下一步函数，不执行该函数将阻止默认流程继续执行|
-|valid-day|(currentDayData, currentDay, next)|点击有效的某一天，触发的事件通知|
-| |currentDayData `Object`|当前点击日期对应设置的数据|
-| |currentDay `String`|当前点击日期，格式yyyy-MM-dd|
-| |next() `Function`|继续执行下一步函数，不执行该函数将阻止默认流程继续执行|
+| |next() `Function`|继续执行下一步函数；`注意`不执行该函数将阻止默认流程继续执行|
+|valid-day|(day, data, next)|点击有效的某一天，触发的事件通知|
+| |day `String`|当前点击日期，格式yyyy-MM-dd|
+| |data `Object`|当前点击日期对应设置的数据|
+| |next() `Function`|继续执行下一步函数，不执行该函数将阻止默认流程继续执行；`注意`不调用该函数将阻止默认流程执行！|
 
 * getMonthData() 获取当前显示月份的数据
 

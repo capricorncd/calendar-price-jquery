@@ -207,6 +207,15 @@
       // 这里可以触发关闭设置窗口
     })
 
+    // 点击有效的某一天通知
+    zxCalendar.$on('valid-day', function (day, data, next) {
+      log('当前点击的(有效)日期为: ' + day + ', 数据：');
+      log(data);
+
+      // 继续执行默认流程
+      next();
+    })
+
     // 设置数据变化
     zxCalendar.$on('setup-value-change', function (data) {
       log('设置窗口被修改数据....');
