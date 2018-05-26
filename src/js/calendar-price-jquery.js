@@ -941,9 +941,12 @@
     }
 
     if (!ed) {
+      // 设置结束日期为开始日期
+      // 及按开始日期与结束日期相同处理
+      ed = sd;
       if (this.ev['error']) this.$emit('error', _err(6))
       this.opts.error(_err(6));
-      return null;
+      // return null;
     }
 
     if (sd > ed) {
