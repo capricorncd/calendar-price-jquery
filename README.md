@@ -148,34 +148,6 @@ npm install calendar-pirce-jquery --save-dev
       config: calendarConfig,
       // 配置在日历中要显示的字段
       show: showConfig,
-      // 点击'确定'按钮，返回设置完成的所有数据
-      callback: function (data) {
-        console.log('callback ....');
-        console.log(data);
-      },
-      // 点击'取消'按钮的回调函数
-      cancel: function () {
-        console.log('取消设置 ....');
-        // 取消设置
-        // 这里可以触发关闭设置窗口等操作
-        // ...
-      },
-      // 错误等提示信息回调函数
-      error: function (err) {
-        console.error(err.msg);
-      },
-      // 月份改变返回月份数据
-      monthChange: function (month) {
-        console.log('monthChange: ')
-        console.log(month)
-        // 新增模拟数据，或服务器异步请求的数据
-        var newData = [{...}]
-        // 更新日历数据
-        zxCalendar.update(newData)
-      },
-      reset: function () {
-        console.log('数据重置成功！');
-      },
       // 自定义风格(颜色)
       style: {
         // 详见参数说明
@@ -197,13 +169,15 @@ npm install calendar-pirce-jquery --save-dev
 
 事件监听
 
-```
+```javascript
+var zxCalendar = $.CalendarPrice({'配置参数'});
+
 // 监听设置表单提交
 // 将阻止默认流程执行
 // 继续执行默认流程，请执行参数next()
 zxCalendar.$on('submit-form', function (data, next) {
   // data 设置的数据
-  console.log('表单数据 ================')
+  console.log('$(submit-form)表单数据 ================')
   console.log(data)
 
   // 此处可以验证表单
@@ -212,6 +186,55 @@ zxCalendar.$on('submit-form', function (data, next) {
 
   // 继续执行下一步
   next()
+})
+
+// 执行过程中错误回调
+zxCalendar.$on('error', function (err) {
+  // 执行中的错误提示
+  console.error('$on(error)Error:')
+  console.log(err)
+  alert(err.msg);
+})
+
+// 切换月份
+zxCalendar.$on('month-change', function (data) {
+  log('$on(month-change) 数据：');
+  log(data);
+})
+
+// 点击有效的某一天通知
+zxCalendar.$on('valid-day', function (day, data, next) {
+  log('$on(valid-day)当前点击的(有效)日期为: ' + day + ', 数据：');
+  log(data);
+
+  // 继续执行默认流程
+  next();
+})
+
+// 设置数据变化
+zxCalendar.$on('setup-value-change', function (data) {
+  log('$on(setup-value-change)设置窗口被修改数据....');
+  log(data);
+  // 取消设置
+  // 这里可以触发关闭设置窗口
+})
+
+// 点击重置按钮回调
+zxCalendar.$on('reset', function () {
+  log('$on(reset)数据重置成功！');
+})
+
+// 点击确定按钮回调，返回当前设置数据
+zxCalendar.$on('confirm', function (data) {
+  log('$on(confirm)点击确定按钮通知！');
+  log(data);
+})
+
+// 点击取消按钮回调
+zxCalendar.$on('cancel', function () {
+  log('$on(cancel)取消设置 ....');
+  // 取消设置
+  // 这里可以触发关闭设置窗口
 })
 ```
 

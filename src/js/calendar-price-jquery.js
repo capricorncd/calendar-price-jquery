@@ -607,7 +607,7 @@
     html += '   </fieldset>';
     html += '   <div class="cddsw-foot-wrapper">';
     html += '       <button class="btn-confirm">确定</button>';
-    html += '       <button class="btn-cancel">取消</button>';
+    html += '       <button class="btn-cancel">关闭</button>';
     html += '   </div>';
     html += '</div>';
 
