@@ -169,7 +169,9 @@
     hideFooterButton: false,
     style: {
       bgColor: '#fff'
-    }
+    },
+    // 禁用设置
+    disableSetup: false
   };
 
   // 当前点击的日期0000-00-00
@@ -659,11 +661,16 @@
     return html;
   }
 
+  // 日期设置容器
+  var $dateSetContainer;
+
   /**
    * 按钮点击事件处理
    */
   fn.handleClickEvent = function () {
     var me = this;
+
+    $dateSetContainer = this.settingWindow.find('.cddsw-container');
 
     // 单日选中外容器
     var $daySelectWrapper;
@@ -694,6 +701,7 @@
 
     // 重置
     this.calendar.on('click', '.btn-reset', function () {
+      if (me.ev['reset']) me.$emit('reset');
       me.data = me._getOptionsData();
       me.createCalendar();
       me.opts.reset();
@@ -701,11 +709,13 @@
 
     // 确定
     this.calendar.on('click', '.btn-confirm', function () {
+      if (me.ev['confirm']) me.$emit('confirm', me.data);
       me.opts.callback(me.data);
     });
 
     // 取消
     this.calendar.on('click', '.btn-cancel', function () {
+      if (me.ev['cancel']) me.$emit('cancel');
       me.opts.cancel();
     });
 
@@ -721,6 +731,8 @@
     // 渲染设置框内容
     // 显示设置窗口
     this.calendar.on('click', '.valid-hook', function () {
+      // 禁用设置
+      if (me.opts.disableSetup) return;
       // 当天日期
       currentDay = $(this).data('id');
       // 当前日的数据
@@ -738,6 +750,17 @@
         return;
       }
 
+      if (me.ev['valid-day']) {
+        me.$emit('valid-day', data, currentDay, function () {
+          handleClickValidDay(data, currentDay);
+        });
+      } else {
+        handleClickValidDay(data, currentDay);
+      }
+    });
+
+    // 处理点击有效日期
+    function handleClickValidDay (data, currentDay) {
       // 初始化input[value]
       me.settingWindow.find('.cddsw-form-wrapper [type="text"]').val('');
       me.settingWindow.find('[name="enableDateRange"]').prop('checked', false);
@@ -754,37 +777,17 @@
 
       // 当月日历
       $daySelectWrapper = me.settingWindow.find('.bs-days-select .bs-options-wrapper');
-      // var dayOptions = '';
-      // var isToday = false;
-      // for (var i = 0; i < currentMonthData.lastDay; i++) {
-      //   var val = currentMonthData.data[i];
-      //   isToday = +thisDate.split('-').pop() === +val.day;
-      //   dayOptions += '<i class="_checkbox' + (isToday ? ' _active' : '') + (val.disabled ? ' _disabled' : '') + '">' + formatNumber(val.day) + '</i>';
-      // }
-      // $daySelectWrapper.html(dayOptions)
-
       me.settingWindow.show();
       verticalCenter(me.settingWindow.find('.cddsw-container'));
-      initSettingWindow();
-    });
+      _resetSettingWindow();
+    }
 
-    function initSettingWindow () {
+    // 重置设置窗口
+    function _resetSettingWindow () {
       weekRangeOn = false;
       $daySelectWrapper.removeClass('disabled-options');
       me.settingWindow.find('.bs-week-chekbox ._active').removeClass('_active');
     }
-
-    // ** 单日详情设置窗口内按钮点击事件 *******************************************
-    // this.settingWindow.on('change', '[type="checkbox"]', function () {
-    //   var isChecked = $(this).is(':checked');
-    //   if (isChecked) {
-    //     dateRangeOn = true;
-    //     $daySelectWrapper.addClass('disabled-options');
-    //   } else {
-    //     dateRangeOn = false;
-    //     if (!weekRangeOn) $daySelectWrapper.removeClass('disabled-options');
-    //   }
-    // });
 
     // 周选中
     function weekChecked () {
@@ -808,6 +811,11 @@
         $this.addClass('_active');
         weekChecked();
       }
+      if (me.ev['setup-value-change']) me.$emit('setup-value-change', {
+        $el: $this,
+        name: 'weeks',
+        value: _getSetWeeks()
+      });
     });
 
     // 单日选择控制
@@ -820,6 +828,11 @@
       } else {
         $this.addClass('_active')
       }
+      if (me.ev['setup-value-change']) me.$emit('setup-value-change', {
+        $el: $this,
+        name: 'days',
+        value: _getSetDays()
+      });
     })
 
     // 关闭设置框
@@ -830,14 +843,14 @@
 
     // 保存设置
     this.settingWindow.on('click', '.btn-confirm', function () {
-      var $dateSetWrapper = $(this).closest('.cddsw-container');
+      // $dateSetContainer = $(this).closest('.cddsw-container');
 
       // 当前显示的设置日期
-      // var thisDate = $dateSetWrapper.find('.cddsw-title').text();
+      // var thisDate = $dateSetContainer.find('.cddsw-title').text();
 
       // 表单数据
       var formData = {};
-      $dateSetWrapper.find('.cddsw-form-wrapper [name]').each(function () {
+      $dateSetContainer.find('.cddsw-form-wrapper [name]').each(function () {
         var key = $(this).attr('name');
         var val = $(this).val();
         formData[key] = val;
@@ -853,18 +866,11 @@
       // var IS_ENABLE = $batch.find('[name="enableDateRange"]').is(':checked');
 
       // 周设置
-      var weeks = [];
+      var weeks = _getSetWeeks();
       // 已选中的week checkbox
-      $batch.find('.bs-week-chekbox ._active').each(function () {
-        weeks.push($(this).data('value'));
-      });
 
       // 单日多选项
-      var daySelcetArr = [];
-      $dateSetWrapper.find('.bs-days-select ._active').each(function () {
-        // console.log(d)
-        daySelcetArr.push($(this).text())
-      })
+      var daySelcetArr = _getSetDays();
 
       // 设置数据
       var data = {
@@ -884,6 +890,26 @@
       }
     })
 
+    // 获取单日选中数据
+    function _getSetDays () {
+      // 单日多选项
+      var arr = [];
+      $dateSetContainer.find('.bs-days-select ._active').each(function () {
+        arr.push($(this).text())
+      })
+      return arr;
+    }
+
+    // 获取周选中数据
+    function _getSetWeeks () {
+      var arr = [];
+      $dateSetContainer.find('.bs-week-chekbox ._active').each(function () {
+        arr.push($(this).data('value'));
+      });
+      return arr;
+    }
+
+    // 处理设置数据
     function _handeSetData (data) {
       // 设置的日期范围数组
       var setDateRangeArr = [];
@@ -909,6 +935,16 @@
       me.handleThisData(data.formData, setDateRangeArr);
     }
 
+    // 监听当前设置内容变化onchange
+    this.settingWindow.on('change', 'input', function () {
+      var $this = $(this);
+      var data = {
+        name: $this.attr('name'),
+        value: $this.val(),
+        $el: $this
+      }
+      if (me.ev['setup-value-change']) me.$emit('setup-value-change', data);
+    })
   }
 
 

@@ -151,13 +151,6 @@
         log('callback ....');
         log(data);
       },
-      // 点击取消按钮回调
-      cancel: function () {
-        log('取消设置 ....');
-        // 取消设置
-        // 这里可以触发关闭设置窗口
-        // ...
-      },
       // 重置按钮
       reset: function () {
         log('数据重置成功！');
@@ -206,6 +199,22 @@
       console.log(err)
       alert(err.msg);
     })
+
+    // 点击取消按钮回调
+    zxCalendar.$on('cancel', function () {
+      log('取消设置 ....');
+      // 取消设置
+      // 这里可以触发关闭设置窗口
+    })
+
+    // 设置数据变化
+    zxCalendar.$on('setup-value-change', function (data) {
+      log('设置窗口被修改数据....');
+      log(data);
+      // 取消设置
+      // 这里可以触发关闭设置窗口
+    })
+
   });
 
   function log (s) {

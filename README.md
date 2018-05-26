@@ -2,7 +2,7 @@
 
 基于Jquery的日历价格、库存等设置插件，也可以作为前台显示日期、价格用。需要设置的参数(字段)需自定义，详见(demo)使用方法...
 
-> 浏览器兼容：ie8+
+> 浏览器兼容：ie9+
 
 #### 主要功能
 
@@ -228,29 +228,31 @@ PC端
 
 ## Options 参数
 
-* el: `.container` (必须)，显示日历的容器，jquery选择器均可(#id, \[属性], .classs等)。
+* cancel(): `Function` (可选)， 点击`取消`按钮的回调函数。
+
+* callback(data): `Function` (可选)， 点击`确定`按钮，返回设置完成的所有数据。
+
+* config: `Array` (必须)，与data中的数据参数(属性)对应，该配置里的配置项，即可设置的参数字段，`key` 为需要设置的字段，`name`为输入框前面显示的名称。
+
+* data: `Object` (可选)，初始时日历上显示的数据，详见使用方法。
+
+* disableSetup: `Boolean` (可选)禁用设置窗口显示。当该插件在前台web页面中作为展示时，不需要弹出设置窗口操作，则可以禁用设置窗口。默认值为`false`。
+
+* el: `String` (必须)，显示日历的容器，jquery选择器均可(#id, \[属性], .class等)。
+
+* endDate: `String` (可选)，结束日期。日历中可设置数据的结束日期，该日期以后的月份将不能显示或操作，同`startDate`，支持某月(默认去该月最后一天)或某天。若未配置此项，系统默认为1年后的今日，即日期范围为1年。
+
+* error(errObject): `Function` (可选)， 配置或操作中的错误、提示信息等回调函数。
+
+* everyday(dayData): `Function` (可选)， 点击有效的`某日`，返回当天的数据。注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置。
+
+* hideFooterButton: `Boolean` (可选)， 隐藏底部按钮（重置、确定、取消）。前台使用该插件时，则需要隐藏底部按钮，只做日历/价格显示。默认值`false`。
+
+* monthChange(monthData): `Function` (可选) 月份切换时，返回切换前日历数据
+
+* show: `Array` (可选)， 日历中需要显示的参数(属性)，与data中的数据参数(属性)对应。`key` 为需要设置的字段名，`name`为显示在日历中的名称(简称)。
 
 * startDate: `2017-06-20` (可选)，开始日期。可设置数据的开始日期，该日期以前的月份将不能设置或操作，支持某月`2017-06`或某天。开始日期开始日期未配置或小于当前系统时间，则开始日期取今日。
-
-* endDate: `2017-09-20` (可选)，结束日期。日历中可设置数据的结束日期，该日期以后的月份将不能显示或操作，同`startDate`，支持某月(默认去该月最后一天)或某天。若未配置此项，系统默认为1年后的今日，即日期范围为1年。
-
-* data: `mockData` (可选)，初始时日历上显示的数据，详见使用方法。
-
-* config: `array` (必须)，与data中的数据参数(属性)对应，该配置里的配置项，即可设置的参数字段，`key` 为需要设置的字段，`name`为输入框前面显示的名称。
-
-* show: `array` (可选)， 日历中需要显示的参数(属性)，与data中的数据参数(属性)对应。`key` 为需要设置的字段名，`name`为显示在日历中的名称(简称)。
-
-* callback: `function` (必须)， 点击`确定`按钮，返回设置完成的所有数据。
-
-* cancel: `function` (可选)， 点击`取消`按钮的回调函数。
-
-* error: `function` (可选)， 配置或操作中的错误、提示信息等回调函数。
-
-* everyday: `function` (可选)， 点击有效的`某日`，返回当天的数据。注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置。
-
-* monthChange: `function(monthData)` (可选) 月份切换时，返回切换前日历数据
-
-* hideFooterButton: `false` (可选)， 隐藏底部按钮（重置、确定、取消）。前台使用该插件时，则需要隐藏底部按钮，只做日历/价格显示。
 
 * style: `自定义颜色`
 
@@ -304,15 +306,29 @@ PC端
 
 * $on('event-name', callback)
 
-|事件名|回调参数|说明|
+|事件名|参数|说明|
 |:--|:--|:--|
-|submit-form|data|设置窗口点击确定时回调，返回设置的数据data|
-|month-change|data|切换月份前触发，返回该月设置数据|
-|error|errData|执行过程中的错误回调|
-
-* update(newArrayData) 更新日历数据；参数为新的数据。
+|cancel|undefiend|点击取消按钮回调|
+|confirm|(data)|点击确定按钮回调|
+| |data `Object`| 设置的所有数据对象 |
+|error|(errData)|执行过程中的错误回调|
+| |errData `Object`|错误码，及错误消息对象|
+|month-change|(data)|切换月份前触发，返回该月设置数据|
+| |data `Object`|该月设置数据|
+|reset|undefiend|点击重置按钮回调|
+|setup-value-change|(data)|设置窗口，设置数据被修改触发的通知/回调|
+||data `Object`|返回当前被修改对象的`{name: 'objectName', value: '被修改后的值'}, $el: '当前被修改元素jQuery对象'`|
+|submit-form|(data, next)|设置窗口点击确定时回调，返回设置的数据data|
+| |data `Object`|当前设置窗口中设置的数据|
+| |next() `Function`|继续执行下一步函数，不执行该函数将阻止默认流程继续执行|
+|valid-day|(currentDayData, currentDay, next)|点击有效的某一天，触发的事件通知|
+| |currentDayData `Object`|当前点击日期对应设置的数据|
+| |currentDay `String`|当前点击日期，格式yyyy-MM-dd|
+| |next() `Function`|继续执行下一步函数，不执行该函数将阻止默认流程继续执行|
 
 * getMonthData() 获取当前显示月份的数据
+
+* update(newArrayData) 更新日历数据；参数为新的数据。
 
 ## Copyright and license
 
