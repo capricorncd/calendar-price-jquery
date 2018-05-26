@@ -18,6 +18,21 @@
 npm install calendar-pirce-jquery --save-dev
 ```
 
+
+## 使用效果图
+
+PC端
+
+![calendar-price-jquery](demo/preview-pc.png)
+
+移动端
+
+![calendar-price-jquery](demo/preview-mobile.png)
+
+## 日历范围处理流程
+
+![calendar-price-jquery](demo/process.png)
+
 ## 使用方法
 
 ```html
@@ -76,12 +91,6 @@ npm install calendar-pirce-jquery --save-dev
           placeholder: '请输入最多购买数量'
         },
         {
-          key: 'buyNumMin',
-          name: '最少购买数',
-          type: 'number',
-          placeholder: '请输入最少购买数'
-        },
-        {
           key: 'price',
           name: '分销售价',
           type: 'text',
@@ -93,28 +102,7 @@ npm install calendar-pirce-jquery --save-dev
           type: 'text',
           placeholder: '请输入'
         },
-        {
-          key: 'priceSettlement',
-          name: '分销结算价',
-          type: 'text',
-          placeholder: '请输入'
-        },
-        {
-          key: 'priceRetail',
-          name: '建议零售价',
-          placeholder: '请输入建议零售价'
-        },
-        {
-          key: 'cashback',
-          name: '返现',
-          placeholder: '返现'
-        },
-        {
-          key: 'stock',
-          name: '当天库存',
-          type: 'number',
-          placeholder: '-1代表不限'
-        }
+        ...
       ]
 
       // 日历中显示配置
@@ -127,10 +115,7 @@ npm install calendar-pirce-jquery --save-dev
           key: 'priceSettlement',
           name: '采:￥'
         },
-        {
-          key: 'stock',
-          name: '库:'
-        }
+        ...
       ]
 
     var zxCalendar = $.CalendarPrice({
@@ -238,17 +223,6 @@ zxCalendar.$on('cancel', function () {
 })
 ```
 
-
-## 使用效果图
-
-PC端
-
-![calendar-price-jquery](demo/preview-pc.png)
-
-移动端
-
-![calendar-price-jquery](demo/preview-mobile.png)
-
 ## Options 参数
 
 * cancel(): `Function` (可选)， 点击`取消`按钮的回调函数。
@@ -331,20 +305,21 @@ PC端
 
 |事件名|参数|说明|
 |:--|:--|:--|
-|cancel|undefiend|点击取消按钮回调|
-|confirm|(data)|点击确定按钮回调|
+|cancel|undefiend|点击取消按钮通知/回调|
+|confirm|(data)|点击确定按钮通知/回调|
 | |data `Object`| 设置的所有数据对象 |
-|error|(errData)|执行过程中的错误回调|
+|error|(errData)|执行过程中的错误通知/回调|
 | |errData `Object`|错误码，及错误消息对象|
 |month-change|(data)|切换月份前触发，返回该月设置数据|
 | |data `Object`|该月设置数据|
-|reset|undefiend|点击重置按钮回调|
+|reset|undefiend|点击重置按钮通知/回调|
+|setup-close|undefiend|设置窗口关闭通知/回调|
 |setup-value-change|(data)|设置窗口，设置数据被修改触发的通知/回调|
 ||data `Object`|返回当前被修改对象的`{name: 'objectName', value: '被修改后的值'}, $el: '当前被修改元素jQuery对象'`|
-|submit-form|(data, next)|设置窗口点击确定时回调，返回设置的数据data|
+|submit-form|(data, next)|设置窗口点击确定时通知/回调，返回设置的数据data|
 | |data `Object`|当前设置窗口中设置的数据|
 | |next() `Function`|继续执行下一步函数；`注意`不执行该函数将阻止默认流程继续执行|
-|valid-day|(day, data, next)|点击有效的某一天，触发的事件通知|
+|valid-day|(day, data, next)|点击有效的某一天，触发的事件通知/回调|
 | |day `String`|当前点击日期，格式yyyy-MM-dd|
 | |data `Object`|当前点击日期对应设置的数据|
 | |next() `Function`|继续执行下一步函数，不执行该函数将阻止默认流程继续执行；`注意`不调用该函数将阻止默认流程执行！|

@@ -479,8 +479,8 @@
           }
           tdId = formatDate(this.month, 'yyyy-MM-') + formatNumber(d);
 
-          if (today == tdId) d = '今天';
-          if (tomorrow == tdId) d = '明天';
+          if (today === tdId) d = '今天';
+          if (tomorrow === tdId) d = '明天';
 
           // 今天（开始日期）与设置的结束日期之间的日期
           // 为可操作，且显示价格、库存
@@ -837,6 +837,7 @@
 
     // 关闭设置框
     this.settingWindow.on('click', '.cddsw-close, .btn-cancel', function () {
+      if (me.ev['setup-close']) me.$emit('setup-close');
       me.settingWindow.hide();
       // $(this).closest('.capricorncd-date-detailed-settings').hide();
     });
@@ -912,27 +913,27 @@
     // 处理设置数据
     function _handeSetData (data) {
       // 设置的日期范围数组
-      var setDateRangeArr = [];
+      var setDaysArray = [];
       // 日期范围
-      var setDateRange = me.handleSetDateRangeData(data.startDay, data.endDay);
+      var setRangeData = me.handleSetDateRangeData(data.startDay, data.endDay);
 
-      if (setDateRange) {
-        setDateRangeArr = setDateRange;
+      if (setRangeData) {
+        setDaysArray = setRangeData;
       }
 
       // 周n未设置，直接处理当天数据
       if (data.weeks.length > 0) {
         // 处理与周n设置的交集
-        var intersectionDate = me.handleSetWeekData(data.weeks, setDateRangeArr);
-        setDateRangeArr = setDateRangeArr.concat(intersectionDate);
+        var intersectionDate = me.handleSetWeekData(data.weeks, setDaysArray);
+        setDaysArray = setDaysArray.concat(intersectionDate);
       }
       // 单日处理
       else {
         // 日期范围与单日的交集
-        var daysArr = me.handleSetDaysData(data.days, setDateRangeArr);
-        setDateRangeArr = setDateRangeArr.concat(daysArr);
+        var daysArr = me.handleSetDaysData(data.days, setDaysArray);
+        setDaysArray = setDaysArray.concat(daysArr);
       }
-      me.handleThisData(data.formData, setDateRangeArr);
+      me.handleThisData(data.formData, setDaysArray);
     }
 
     // 监听当前设置内容变化onchange
@@ -1019,14 +1020,14 @@
   /**
    * 设置了周n的数据处理
    * @param week 设置的周n数组
-   * @param setDateRangeArr 设置的日期范围或初始的日期范围
+   * @param setDaysArray 设置的日期范围或初始的日期范围
    */
-  fn.handleSetWeekData = function (week, setDateRangeArr) {
+  fn.handleSetWeekData = function (week, setDaysArray) {
     var me = this;
     var arr = [];
     // 日期范围长度
-    var len = setDateRangeArr.length
-    var resArr = len <= 1 ? this._getInitDaysRange() : setDateRangeArr;
+    var len = setDaysArray.length
+    var resArr = len <= 1 ? this._getInitDaysRange() : setDaysArray;
     $.each(resArr, function (index, val) {
       var weekNum = me.dateToObject(val).getDay();
       // week为数组，不用join方法indexOf无效？
@@ -1038,10 +1039,10 @@
   };
 
   // 日期范围与单日的交集
-  fn.handleSetDaysData = function (days, setDateRangeArr) {
+  fn.handleSetDaysData = function (days, setDaysArray) {
     var result = [];
-    var len = setDateRangeArr.length;
-    var resArr = len <= 1 ? this._getInitDaysRange() : setDateRangeArr;
+    var len = setDaysArray.length;
+    var resArr = len <= 1 ? this._getInitDaysRange() : setDaysArray;
     // days数组字符串
     var daysArrStr = days.join(',');
     $.each(resArr, function (index, val) {
