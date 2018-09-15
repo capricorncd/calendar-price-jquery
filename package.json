@@ -1,7 +1,7 @@
 {
   "name": "calendar-price-jquery",
-  "version": "1.4.0",
-  "author": "zx1984",
+  "version": "1.4.1",
+  "author": "capricorncd",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-css-base64": "^1.3.4",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zx1984/calendar-price-jquery.git"
+    "url": "git+https://github.com/capricorncd/calendar-price-jquery.git"
   },
   "keywords": [
     "calendar",
@@ -23,9 +23,9 @@
   ],
   "description": "calendar-pirce-jquery",
   "bugs": {
-    "url": "https://github.com/zx1984/calendar-price-jquery/issues"
+    "url": "https://github.com/capricorncd/calendar-price-jquery/issues"
   },
-  "homepage": "https://github.com/zx1984/calendar-price-jquery",
+  "homepage": "https://github.com/capricorncd/calendar-price-jquery",
   "main": "dist/js/calendar-pirce-jquery.min.js",
   "scripts": {
     "dev": "gulp --model development",
