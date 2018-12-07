@@ -1,15 +1,10 @@
-var gulp = require('gulp')
-var cssBase64 = require('gulp-css-base64')
-var uglify = require('gulp-uglify')
-var stylus = require('gulp-stylus')
-var watch = require('gulp-watch')
-var rename = require('gulp-rename')
-var header = require('gulp-header')
-var config = require('./package.json')
-var argv = require('yargs').argv
-// development or production
-var isProd = argv.model === 'production'
-console.log(isProd)
+const gulp = require('gulp')
+const cssBase64 = require('gulp-css-base64')
+const uglify = require('gulp-uglify')
+const stylus = require('gulp-stylus')
+const rename = require('gulp-rename')
+const header = require('gulp-header')
+const config = require('./package.json')
 
 // uglify
 gulp.task('uglify', function () {
@@ -37,8 +32,5 @@ gulp.task('watch', function () {
   gulp.watch('./src/stylus/*.styl', ['stylus'])
 })
 
-if (isProd) {
-  gulp.task('default', ['uglify', 'stylus'])
-} else {
-  gulp.task('default', ['uglify', 'stylus', 'watch'])
-}
+gulp.task('build', ['uglify', 'stylus'])
+gulp.task('dev', ['uglify', 'stylus', 'watch'])

@@ -88,19 +88,25 @@ PC端
           key: 'buyNumMax',
           name: '最多购买数',
           type: 'number',
-          placeholder: '请输入最多购买数量'
+          placeholder: '请输入最多购买数量',
+          // 可被编辑字段，即会显示对于input
+          editable: true
         },
         {
           key: 'price',
           name: '分销售价',
           type: 'text',
-          placeholder: '请输入'
+          placeholder: '请输入',
+          // 不能编辑，不会显示该项input
+          editable: false
         },
         {
           key: 'priceMarket',
           name: '景区挂牌价',
           type: 'text',
-          placeholder: '请输入'
+          placeholder: '请输入',
+          // input为禁用状态
+          disabled: true
         },
         ...
       ]
@@ -115,6 +121,10 @@ PC端
           key: 'priceSettlement',
           name: '采:￥'
         },
+        {
+          key: 'buyNumMax',
+            name: '采:￥'
+          },
         ...
       ]
 
@@ -230,6 +240,11 @@ zxCalendar.$on('cancel', function () {
 * callback(data): `Function` (可选)， 点击`确定`按钮，返回设置完成的所有数据。
 
 * config: `Array` (必须)，与data中的数据参数(属性)对应，该配置里的配置项，即可设置的参数字段，`key` 为需要设置的字段，`name`为输入框前面显示的名称。
+
+|元素字段|类型|必须|说明|
+|:--|:--|:--|:--|
+|disabled|boolean|否|是否禁用input输入，默认为`false`|
+|editable|boolean|否|是否显示该项input，默认为`true`|
 
 * data: `Object` (可选)，初始时日历上显示的数据，详见使用方法。
 

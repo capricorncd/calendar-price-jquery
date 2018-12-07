@@ -634,11 +634,16 @@
   fn._createDaySetupInputGroup = function () {
     var html = '';
     var config = this.opts.config;
+    var disabled
     for (var i = 0; i < config.length; i++) {
       var val = config[i];
+      console.log(val)
+      // 判断是否需要编辑
+      if (val.editable === false) continue;
+      disabled = val.disabled ? 'disabled' : ''
       html += '<li>';
       html += '   <label>'+ val.name +'</label>';
-      html += '   <input name="'+ val.key +'" placeholder="' + val.placeholder + '" type="' + (val.type || 'text') + '">';
+      html += '   <input name="'+ val.key +'" placeholder="' + val.placeholder + '" type="' + (val.type || 'text') + '" ' + disabled + '>';
       html += '</li>';
     }
     return html;

@@ -1,16 +1,18 @@
 /**
- * Created by zx1984 2018/3/6
- * https://github.com/zx1984
+ * Created by capricorncd 2018/3/6
+ * https://github.com/capricorncd
  */
 'use strict';
+
+var date = new Date();
 
 // 模拟数据
 function createMockData () {
   var mockData = []
   for (var i = 0; i < 100; i++) {
     mockData.push({
-      date: '2018-'+ fd(i%12 + 1) +'-' + fd(randNum(30)),
-      stock: i*21,
+      date: date.getFullYear() + '-' + fd(i % 12 + 1) + '-' + fd(randNum(30)),
+      stock: i * 21,
       buyNumMax: "50",
       buyNumMin: "1",
       price: randNum(i) + '.00',

@@ -1,6 +1,6 @@
 {
   "name": "calendar-price-jquery",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "author": "capricorncd",
   "devDependencies": {
     "gulp": "^3.9.1",
@@ -9,8 +9,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-stylus": "^2.6.0",
     "gulp-uglify": "^3.0.0",
-    "gulp-watch": "^4.3.11",
-    "yargs": "^10.0.3"
+    "gulp-watch": "^4.3.11"
   },
   "repository": {
     "type": "git",
@@ -28,8 +27,8 @@
   "homepage": "https://github.com/capricorncd/calendar-price-jquery",
   "main": "dist/js/calendar-pirce-jquery.min.js",
   "scripts": {
-    "dev": "gulp --model development",
-    "build": "gulp --model production"
+    "dev": "gulp dev",
+    "build": "gulp build"
   },
   "license": "MIT"
 }
