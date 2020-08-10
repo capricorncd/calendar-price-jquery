@@ -930,13 +930,14 @@
       if (data.weeks.length > 0) {
         // 处理与周n设置的交集
         var intersectionDate = me.handleSetWeekData(data.weeks, setDaysArray);
-        setDaysArray = setDaysArray.concat(intersectionDate);
+        setDaysArray =  setDaysArray.filter(function (val) { return intersectionDate.indexOf(val) > -1 });
+
       }
       // 单日处理
       else {
         // 日期范围与单日的交集
         var daysArr = me.handleSetDaysData(data.days, setDaysArray);
-        setDaysArray = setDaysArray.concat(daysArr);
+        setDaysArray = setDaysArray.filter(function (val) { return daysArr.indexOf(val) > -1 });
       }
       me.handleThisData(data.formData, setDaysArray);
     }
