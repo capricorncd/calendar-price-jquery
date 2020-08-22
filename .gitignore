@@ -1,3 +1,5 @@
 node_modules/
 .idea/
 __psd/
+
+package-lock.json
