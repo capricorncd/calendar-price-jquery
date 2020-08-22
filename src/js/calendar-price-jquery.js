@@ -931,13 +931,15 @@
         // 处理与周n设置的交集
         var intersectionDate = me.handleSetWeekData(data.weeks, setDaysArray);
         setDaysArray =  setDaysArray.filter(function (val) { return intersectionDate.indexOf(val) > -1 });
-
       }
       // 单日处理
       else {
-        // 日期范围与单日的交集
-        var daysArr = me.handleSetDaysData(data.days, setDaysArray);
-        setDaysArray = setDaysArray.filter(function (val) { return daysArr.indexOf(val) > -1 });
+        //单日未设置，直接处理当天数据
+        if(data.days.length > 0){
+          // 日期范围与单日的交集
+          var daysArr = me.handleSetDaysData(data.days, setDaysArray);
+          setDaysArray = setDaysArray.filter(function (val) { return daysArr.indexOf(val) > -1 });
+        }
       }
       me.handleThisData(data.formData, setDaysArray);
     }
