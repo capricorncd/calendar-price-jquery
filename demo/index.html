@@ -13,6 +13,7 @@
 
 <div class="container"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.10.4/polyfill.min.js"></script>
 <script src="js/jquery-1.12.4.min.js"></script>
 <script src="js/mock-data.js"></script>
 <!--<script src="../dist/js/calendar-price-jquery.min.js"></script>-->
@@ -142,7 +143,7 @@
     var zxCalendar = $.CalendarPrice({
       el: '.container',
       // startDate: '2017-08-02',
-      endDate: '2019-02-20',
+      endDate: randomEndDate(),
       data: MOCK_DATA,
       // 配置需要设置的字段名称
       config: calendarConfig,

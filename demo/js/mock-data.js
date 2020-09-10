@@ -32,3 +32,15 @@ function fd (n) {
   n = n.toString();
   return n[1] ? n : '0' + n;
 }
+
+/**
+ * create random end date
+ * @returns {string}
+ */
+function randomEndDate() {
+  return [
+    date.getFullYear() + 1,
+    fd(randNum(12)),
+    fd(randNum(30))
+  ].join('-')
+}
