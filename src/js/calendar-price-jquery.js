@@ -714,6 +714,18 @@
 
     // 确定
     this.calendar.on('click', '.btn-confirm', function () {
+      //将对象数据进行排序，防止后台批量插入数据库，数据错乱
+      var newArr=[];
+      var length=me.data.length;
+      for (var i = 0; i < length; i++) {
+        var val = me.data[i];
+        var newData={};
+        Object.keys(val).sort().map(key => {
+          newData[key]=val[key]
+        })
+        newArr.push(newData);
+      }
+      me.data=newArr;
       if (me.ev['confirm']) me.$emit('confirm', me.data);
       me.opts.callback(me.data);
     });
