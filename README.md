@@ -4,6 +4,12 @@
 
 > 浏览器兼容：ie9+
 
+<p align="left">
+  <a href="https://npmcharts.com/compare/calendar-price-jquery?minimal=true"><img src="https://img.shields.io/npm/dm/calendar-price-jquery.svg?sanitize=true" alt="Downloads"></a>
+  <a href="https://www.npmjs.com/package/calendar-price-jquery"><img src="https://img.shields.io/npm/v/calendar-price-jquery.svg?sanitize=true" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/calendar-price-jquery"><img src="https://img.shields.io/npm/l/calendar-price-jquery.svg?sanitize=true" alt="License"></a>
+</p>
+
 #### 主要功能
 
 * 自定义日历显示参数
@@ -14,8 +20,14 @@
 
 #### npm
 
-```
+```bash
 npm install calendar-pirce-jquery --save-dev
+```
+
+#### yarn
+
+```bash
+yarn add calendar-price-jquery
 ```
 
 
