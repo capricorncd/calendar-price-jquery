@@ -715,17 +715,17 @@
     // 确定
     this.calendar.on('click', '.btn-confirm', function () {
       //将对象数据进行排序，防止后台批量插入数据库，数据错乱
-      var newArr=[];
-      var length=me.data.length;
+      var newArr = [];
+      var length = me.data.length;
       for (var i = 0; i < length; i++) {
         var val = me.data[i];
-        var newData={};
-        Object.keys(val).sort().map(key => {
-          newData[key]=val[key]
+        var newData = {};
+        Object.keys(val).sort().map(function (key) {
+          newData[key] = val[key]
         })
         newArr.push(newData);
       }
-      me.data=newArr;
+      me.data = newArr;
       if (me.ev['confirm']) me.$emit('confirm', me.data);
       me.opts.callback(me.data);
     });
@@ -942,12 +942,12 @@
       if (data.weeks.length > 0) {
         // 处理与周n设置的交集
         var intersectionDate = me.handleSetWeekData(data.weeks, setDaysArray);
-        setDaysArray =  setDaysArray.filter(function (val) { return intersectionDate.indexOf(val) > -1 });
+        setDaysArray = setDaysArray.filter(function (val) { return intersectionDate.indexOf(val) > -1 });
       }
       // 单日处理
       else {
         //单日未设置，直接处理当天数据
-        if(data.days.length > 0){
+        if(data.days.length > 0) {
           // 日期范围与单日的交集
           var daysArr = me.handleSetDaysData(data.days, setDaysArray);
           setDaysArray = setDaysArray.filter(function (val) { return daysArr.indexOf(val) > -1 });
